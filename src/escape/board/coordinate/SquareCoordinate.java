@@ -18,7 +18,7 @@ import java.util.Objects;
  * 
  * @version Mar 27, 2020
  */
-public class SquareCoordinate implements Coordinate
+public class SquareCoordinate implements Coordinate, SquaredShapeCoordinate
 {
     private final int x;
     private final int y;
@@ -43,16 +43,33 @@ public class SquareCoordinate implements Coordinate
 	{
 		SquareCoordinate sc = (SquareCoordinate) c;
 		
-		int xDifference = sc.getX() - x;
-		int yDifference = sc.getY() - y;
+		int x2 = sc.getX();
+		int y2 = sc.getY(); 
 		
-		int xDistance = (int) Math.pow(xDifference, 2);
-		int yDistance = (int) Math.pow(yDifference, 2);
+		int distance = 0;
 		
-		int distance = (int) Math.sqrt(xDistance + yDistance);
+		if (x == x2 && y != y2)
+		{
+			distance = Math.abs(y2 - y);
+		}
+		
+		else if (y == y2 && x != x2)
+		{
+			distance = Math.abs(x2 - x);
+		}
+		
+		else
+		{
+			distance = Math.max((x2 - x), (y2 - y));
+		}
 		
 		// TODO Auto-generated method stub
 		return distance;
+	}
+	
+	public CoordinateID getID()
+	{
+		return CoordinateID.SQUARE;
 	}
 	
 	/**

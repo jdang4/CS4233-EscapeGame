@@ -15,6 +15,7 @@ import static escape.board.LocationType.CLEAR;
 import java.io.*;
 import javax.xml.bind.*;
 import escape.board.coordinate.*;
+import escape.exception.EscapeException;
 import escape.piece.EscapePiece;
 import escape.util.*;
 
@@ -26,6 +27,7 @@ import escape.util.*;
 public class BoardBuilder
 {
 	private BoardInitializer bi;
+
 	/**
 	 * The constructor for this takes a file name. It is either an absolute path
 	 * or a path relative to the beginning of this project.
@@ -37,74 +39,56 @@ public class BoardBuilder
 		JAXBContext contextObj = JAXBContext.newInstance(BoardInitializer.class);
         Unmarshaller mub = contextObj.createUnmarshaller();
         bi = (BoardInitializer)mub.unmarshal(new FileReader(fileName));
+
 	}
 	
 	public Board makeBoard()
 	{
-		if (bi.getCoordinateId().equals(CoordinateID.SQUARE))
+		Board board = null;
+		InitializeBoard initBoard = null;
+		
+		if (bi.getCoordinateId().equals(CoordinateID.HEX))
 		{
-			SquareBoard board = new SquareBoard(bi.getxMax(), bi.getyMax());
-	        initializeBoard(board, bi.getLocationInitializers());
-	        return board;
+			board = new HexBoard(bi.getxMax(), bi.getyMax());
+			initBoard = new HexBoardInitializer();
 		}
 		
-		else if (bi.getCoordinateId().equals(CoordinateID.HEX))
+		else
 		{
+			board = new SquareBoard(bi.getxMax(), bi.getyMax());
 			
-			HexBoard board = new HexBoard(bi.getxMax(), bi.getyMax());
-			
-		}
-		// Change next when we have Hex boards too.
-		HexBoard board = new HexBoard(bi.getxMax(), bi.getyMax());
-		return board;
-	}
-	
-	/*
-	private void test(Board b, BoardType type, LocationInitializer...initializers)
-	{
-		for (LocationInitializer li : initializers) {
-			Coordinate c = null;
-			
-			if (type.equals(BoardType.SQUARE))
+			if (bi.getCoordinateId().equals(CoordinateID.ORTHOSQUARE))
 			{
-				c = SquareCoordinate.makeCoordinate(li.x, li.y);
-				b = ((SquareBoard) b);
+				initBoard = new OrthoSquareBoardInitializer();
+			} 
+			
+			else if (bi.getCoordinateId().equals(CoordinateID.SQUARE))
+			{
+				initBoard = new SquareBoardInitializer();
 			}
 			
 			else
 			{
-				c = HexCoordinate.makeCoordinate(li.x, li.y);
-				b = ((HexBoard) b);
+				throw new EscapeException("No CoordinateID detected");
 			}
 			
-			// i believe this means if it is CLEAR 
-			if (li.pieceName != null) {
-				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
-			}
-
-			// this is for setting a location type on the board (either EXIT or BLOCK)
-			if (li.locationType != null && li.locationType != CLEAR) {
-				b.setLocationType(c, li.locationType);
-			}
 		}
+		
+		
+		initBoard.initializeBoard(board, bi.getLocationInitializers());
+		
+		return board;
+		
+		
+	}
+	
+	/*
+	private void initializeBoard(Board b, InitializeBoard init, LocationInitializer... initializers)
+	{
+		
+		init.initializeBoard(b, initializers);
 		
 	}
 	*/
-	private void initializeBoard(SquareBoard b, LocationInitializer... initializers)
-	{
-		for (LocationInitializer li : initializers) {
-			SquareCoordinate c = SquareCoordinate.makeCoordinate(li.x, li.y);
-			
-			// i believe this means if it is CLEAR 
-			if (li.pieceName != null) {
-				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
-			}
-			
-			// this is for setting a location type on the board (either EXIT or BLOCK)
-			if (li.locationType != null && li.locationType != CLEAR) {
-				b.setLocationType(c, li.locationType);
-			}
-		}
-	}
 	
 }

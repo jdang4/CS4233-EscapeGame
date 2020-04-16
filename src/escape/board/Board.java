@@ -12,7 +12,7 @@
 
 package escape.board;
 
-import escape.board.coordinate.Coordinate;
+import escape.board.coordinate.*;
 import escape.piece.EscapePiece;
 
 /**

@@ -14,6 +14,7 @@ package escape.board;
 
 import java.util.*;
 import escape.board.coordinate.*;
+import escape.exception.EscapeException;
 import escape.piece.EscapePiece;
 
 /**
@@ -24,6 +25,8 @@ public class HexBoard implements Board<HexCoordinate>
 {
 	Map<HexCoordinate, LocationType> hexes;
 	Map<HexCoordinate, EscapePiece> pieces;
+	private final BoardType type; 
+	private CoordinateID id;
 	
 	private final int xMax, yMax;
 	public HexBoard(int xMax, int yMax)
@@ -32,14 +35,21 @@ public class HexBoard implements Board<HexCoordinate>
 		this.yMax = yMax;
 		pieces = new HashMap<HexCoordinate, EscapePiece>();
 		hexes = new HashMap<HexCoordinate, LocationType>();
+		type = BoardType.HEX;
+		id = CoordinateID.HEX;
 	}
 	
-	public HexBoard()
+	public BoardType getBoardType()
 	{
-		this.xMax = Integer.MAX_VALUE;
-		this.yMax = Integer.MAX_VALUE;
-		pieces = new HashMap<HexCoordinate, EscapePiece>();
-		hexes = new HashMap<HexCoordinate, LocationType>();
+		return type;
+	}
+	
+	/*
+	 * @see escape.board.Board#setCoordinateID()
+	 */
+	public void setCoordinateID(CoordinateID id)
+	{
+		this.id = id;
 	}
 	
 	/*
@@ -50,8 +60,25 @@ public class HexBoard implements Board<HexCoordinate>
 	@Override
 	public EscapePiece getPieceAt(HexCoordinate coord)
 	{
-		// TODO Auto-generated method stub
-		return pieces.get(coord);
+		if (pieces.containsKey(coord))
+		{
+			return pieces.get(coord);
+		}
+		
+		return null;
+	}
+	
+	private boolean insideBoard(HexCoordinate coord)
+	{
+		if (coord.getX() >= 0 && coord.getX() <= xMax)
+		{
+			if (coord.getY() >= 0 && coord.getY() <= yMax)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	/*
@@ -62,12 +89,33 @@ public class HexBoard implements Board<HexCoordinate>
 	@Override
 	public void putPieceAt(EscapePiece p, HexCoordinate coord)
 	{
-		// TODO Auto-generated method stub
+		boolean is_finite = (xMax == 0 && yMax == 0) ? false : true;
 		
+		if (p == null && pieces.containsKey(coord))
+		{
+			pieces.remove(coord);
+		}
+		
+		else
+		{
+			// checking if it is a finite hex board
+			if (is_finite)
+			{
+				if (!insideBoard(coord))
+				{
+					throw new EscapeException("Not a Valid Hex Coordinate for this HexBoard");
+				}
+			}
+			
+			pieces.put(coord, p);
+		}
 	}
 	
 	public void setLocationType(HexCoordinate c, LocationType lt)
 	{
 		hexes.put(c, lt);
 	}
+
+	
+
 }

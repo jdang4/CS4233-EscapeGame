@@ -18,7 +18,7 @@ import java.util.Objects;
  * Description
  * @version Apr 12, 2020
  */
-public class OrthoSquareCoordinate implements Coordinate
+public class OrthoSquareCoordinate implements Coordinate, SquaredShapeCoordinate
 {
 	private final int x;
 	private final int y;
@@ -63,6 +63,11 @@ public class OrthoSquareCoordinate implements Coordinate
 	{
 		return y;
 	}
+	
+	public CoordinateID getID()
+	{
+		return CoordinateID.ORTHOSQUARE;
+	}
 
 	/*
 	 * @see java.lang.Object#hashCode()
@@ -82,7 +87,7 @@ public class OrthoSquareCoordinate implements Coordinate
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof SquareCoordinate)) {
+		if (!(obj instanceof OrthoSquareCoordinate)) {
 			return false;
 		}
 		OrthoSquareCoordinate other = (OrthoSquareCoordinate) obj;

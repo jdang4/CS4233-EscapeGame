@@ -104,7 +104,7 @@ public class HexCoordinate implements Coordinate
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof SquareCoordinate)) {
+		if (!(obj instanceof HexCoordinate)) {
 			return false;
 		}
 		HexCoordinate other = (HexCoordinate) obj;
