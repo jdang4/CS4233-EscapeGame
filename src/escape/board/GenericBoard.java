@@ -12,12 +12,45 @@
 
 package escape.board;
 
+import escape.board.coordinate.*;
+
 /**
  * Description
- * @version Apr 12, 2020
+ * @version Apr 16, 2020
  */
-public enum BoardType
+public abstract class GenericBoard implements Board<Coordinate>
 {
-	SQUARE, HEX;
+	protected final int xMax, yMax;
+	protected BoardType type;
+	protected CoordinateID id;
+	
+	public GenericBoard(int xMax, int yMax)
+	{
+		this.xMax = xMax;
+		this.yMax = yMax;
+	} 
+	
+	public BoardType getBoardType()
+	{
+		return type;
+	}
+	 
+	public void setCoordinateID(CoordinateID id)
+	{
+		// do this to only allow this to be set once
+		if (this.id == null && id != null)
+		{
+			this.id = id;
+		}
+	}
+	
+	public int getXMax()
+	{
+		return xMax;
+	}
+	
+	public int getYMax()
+	{
+		return yMax;
+	}
 }
- 

@@ -30,14 +30,11 @@ public class HexBoardInitializer implements InitializeBoard
 		b.setCoordinateID(CoordinateID.HEX);
 		
 		for (LocationInitializer li : initializers) {
-			System.out.println(li.pieceName);
-			System.out.println(li.x + ", " + li.y);
 			HexCoordinate c = HexCoordinate.makeCoordinate(li.x, li.y);
 			
 			// i believe this means if it is CLEAR 
 			if (li.pieceName != null) {
 				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
-				System.out.println("Put Hex Piece");
 			}
 			
 			// this is for setting a location type on the board (either EXIT or BLOCK)
@@ -45,5 +42,5 @@ public class HexBoardInitializer implements InitializeBoard
 				b.setLocationType(c, li.locationType);
 			}
 		}
-	}
+	} 
 }

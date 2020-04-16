@@ -28,12 +28,12 @@ public class OrthoSquareBoardInitializer implements InitializeBoard
 	{
 		SquareBoard b = (SquareBoard) board;
 		b.setCoordinateID(CoordinateID.ORTHOSQUARE);
+		 
 		for (LocationInitializer li : initializers) {
 			OrthoSquareCoordinate c = OrthoSquareCoordinate.makeCoordinate(li.x, li.y);
 			
 			// i believe this means if it is CLEAR 
 			if (li.pieceName != null) {
-				System.out.println(c.getID());
 				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
 			}
 			

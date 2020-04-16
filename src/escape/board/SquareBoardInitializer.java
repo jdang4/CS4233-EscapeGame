@@ -25,10 +25,10 @@ public class SquareBoardInitializer implements InitializeBoard
 {
 	@Override
 	public void initializeBoard(Board board, LocationInitializer... initializers)
-	{ 
+	{  
 		SquareBoard b = (SquareBoard) board;
 		b.setCoordinateID(CoordinateID.SQUARE);
-		
+		 
 		for (LocationInitializer li : initializers) {
 			SquareCoordinate c = SquareCoordinate.makeCoordinate(li.x, li.y);
 			// i believe this means if it is CLEAR 

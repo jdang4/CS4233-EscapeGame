@@ -23,28 +23,43 @@ import escape.piece.EscapePiece;
  * would naturally add methods based upon theire design.
  * @version Apr 2, 2020
  */
-public class SquareBoard implements Board<SquaredShapeCoordinate>, SquareBoardInfo
+public class SquareBoard extends GenericBoard implements Board<Coordinate>, SquareBoardInfo
 {
 	Map<SquaredShapeCoordinate, LocationType> squares;
 	Map<SquaredShapeCoordinate, EscapePiece> pieces;
-	private final BoardType type;
-	private CoordinateID id;
 	
-	private final int xMax, yMax;
+	//private final int xMax, yMax;
 	public SquareBoard(int xMax, int yMax)
 	{
-		this.xMax = xMax;
-		this.yMax = yMax;
+		super(xMax, yMax);
 		pieces = new HashMap<SquaredShapeCoordinate, EscapePiece>();
 		squares = new HashMap<SquaredShapeCoordinate, LocationType>();
 		type = BoardType.SQUARE;
+	} 
+	 
+	private CoordinateID getCoordinateID(Coordinate c)
+	{
+		if (c.getClass().equals(SquareCoordinate.class))
+		{
+			return CoordinateID.SQUARE;
+		}
+		
+		else if (c.getClass().equals(OrthoSquareCoordinate.class))
+		{
+			return CoordinateID.ORTHOSQUARE;
+		}
+		
+		else
+		{
+			return CoordinateID.HEX;
+		}
 	}
 	
 	private boolean insideBoard(SquaredShapeCoordinate coord)
 	{
-		if (coord.getX() >= 0 && coord.getX() <= xMax)
+		if (coord.getX() > 0 && coord.getX() <= getXMax())
 		{
-			if (coord.getY() >= 0 && coord.getY() <= yMax)
+			if (coord.getY() > 0 && coord.getY() <= getYMax())
 			{
 				return true;
 			}
@@ -53,23 +68,18 @@ public class SquareBoard implements Board<SquaredShapeCoordinate>, SquareBoardIn
 		return false;
 	}
 	
-	public BoardType getBoardType()
-	{
-		return type;
-	}
-	
-	public void setCoordinateID(CoordinateID id)
-	{
-		this.id = id;
-	}
-	
 	/*
 	 * @see escape.board.Board#getPieceAt(escape.board.coordinate.Coordinate)
 	 */
 	@Override
-	public EscapePiece getPieceAt(SquaredShapeCoordinate coord)
+	public EscapePiece getPieceAt(Coordinate coord)
 	{
-		if (pieces.containsKey(coord))
+		if (!this.id.equals(getCoordinateID(coord)))
+		{
+			throw new EscapeException("Invalid Coordinate Type");
+		}
+		
+		else if (pieces.containsKey(coord))
 		{
 			return pieces.get(coord);
 		}
@@ -82,72 +92,76 @@ public class SquareBoard implements Board<SquaredShapeCoordinate>, SquareBoardIn
 	 * @see escape.board.Board#putPieceAt(escape.piece.EscapePiece, escape.board.coordinate.Coordinate)
 	 */
 	@Override
-	public void putPieceAt(EscapePiece p, SquaredShapeCoordinate coord)
+	public void putPieceAt(EscapePiece p, Coordinate coord)
 	{
+		LocationType BLOCK = LocationType.BLOCK;
+		LocationType EXIT = LocationType.EXIT;
 		
-		// verifying if attempting to put piece on a Block
-		if (getLocationType(coord).equals(LocationType.BLOCK))
+		if (!this.id.equals(getCoordinateID(coord)))
 		{
-			throw new EscapeException("Cannot place piece on a blocked coordinate");
+			throw new EscapeException("Invalid Coordinate Type");
 		}
 		
-		// desired coordinate is not of a block type
-		else
+		SquaredShapeCoordinate sc = (SquaredShapeCoordinate) coord;
+		// putting a null where an existing piece is at
+		if (p == null && pieces.containsKey(sc))
 		{
-			// verify coordinate id is not different
-			if (coord.getID().equals(this.id))
-			{
-				if (p == null && pieces.containsKey(coord))
-				{
-					pieces.remove(coord);
-					return;
-				}
-				
-				else
-				{
-					if (insideBoard(coord))
-					{
-						if (!getLocationType(coord).equals(LocationType.EXIT))
-						{
-							pieces.put(coord, p);
-						}
-						
-						return;
-					}
-				}
+			pieces.remove(sc);
+			return;
+		}
+
+		// handling the special cases of the coordinate's location type
+		if (getLocationType(sc) != null)
+		{
+			if (getLocationType(sc).equals(EXIT))
+			{ 
+				return;
 			}
-			
-			// coordinate id was different
-			else
+
+			else if (getLocationType(sc).equals(BLOCK))
 			{
-				throw new EscapeException("Cannot put a different coordinate type on board");
+				throw new EscapeException("Cannot put piece on a Block");
 			}
 		}
+
+		// lastly check to see if coordinate is within the board
+		// before putting it in the board
+		if (insideBoard(sc))
+		{
+			pieces.put(sc, p);
+			return;
+		}
+		
+		throw new EscapeException("Unable to place piece on board");
+		
 	}
-	
+	 
 	public void setLocationType(SquaredShapeCoordinate c, LocationType lt)
 	{
-		squares.put(c, lt);
+		if (c.getID().equals(this.id) && insideBoard(c))
+		{
+			squares.put(c, lt);
+		}
+		
+		else
+		{
+			throw new EscapeException("Given invalid coordinate");
+		}
+
 	}
 	
 	public LocationType getLocationType(SquaredShapeCoordinate c)
 	{
-		if (squares.containsKey(c))
+		if (!c.getID().equals(this.id))
+		{
+			throw new EscapeException("Given invalid coordinate");
+		}
+		
+		else if (squares.containsKey(c))
 		{
 			return squares.get(c);
 		}
 		
 		return null;
 	}
-	
-	public int getXMax()
-	{
-		return xMax;
-	}
-	
-	public int getYMax()
-	{
-		return yMax;
-	}
-	
 }

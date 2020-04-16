@@ -21,58 +21,61 @@ import escape.piece.EscapePiece;
  * Description
  * @version Apr 12, 2020
  */
-public class HexBoard implements Board<HexCoordinate>
+public class HexBoard extends GenericBoard implements Board<Coordinate>
 {
 	Map<HexCoordinate, LocationType> hexes;
 	Map<HexCoordinate, EscapePiece> pieces;
-	private final BoardType type; 
-	private CoordinateID id;
-	
-	private final int xMax, yMax;
+	 
+	//private final int xMax, yMax;
 	public HexBoard(int xMax, int yMax)
 	{
-		this.xMax = xMax;
-		this.yMax = yMax;
+		super(xMax, yMax);
 		pieces = new HashMap<HexCoordinate, EscapePiece>();
 		hexes = new HashMap<HexCoordinate, LocationType>();
 		type = BoardType.HEX;
-		id = CoordinateID.HEX;
 	}
-	
-	public BoardType getBoardType()
-	{
-		return type;
-	}
-	
-	/*
-	 * @see escape.board.Board#setCoordinateID()
-	 */
-	public void setCoordinateID(CoordinateID id)
-	{
-		this.id = id;
-	}
-	
+	 
 	/*
 	 * @see escape.board.Board#getPieceAt(escape.board.coordinate.Coordinate)
 	 */
 	//TODO
 	// implement this
 	@Override
-	public EscapePiece getPieceAt(HexCoordinate coord)
+	public EscapePiece getPieceAt(Coordinate coord)
 	{
-		if (pieces.containsKey(coord))
+		if (!coord.getClass().equals(HexCoordinate.class))
+		{
+			throw new EscapeException("Invalid Coordinate Type");
+		} 
+		
+		else if (pieces.containsKey(coord))
 		{
 			return pieces.get(coord);
 		}
 		
+		// no pieces at coordinate
 		return null;
 	}
 	
 	private boolean insideBoard(HexCoordinate coord)
 	{
-		if (coord.getX() >= 0 && coord.getX() <= xMax)
+		boolean validXBoundary = inXBoundary(coord);
+		boolean validYBoundary = inYBoundary(coord);
+		
+		return (validXBoundary && validYBoundary);
+	}
+	
+	private boolean inXBoundary(HexCoordinate coord) 
+	{
+		// infinite rows
+		if (xMax == 0)
 		{
-			if (coord.getY() >= 0 && coord.getY() <= yMax)
+			return true;
+		}
+		
+		else
+		{
+			if (coord.getX() >= 0 && coord.getX() <= getXMax())
 			{
 				return true;
 			}
@@ -80,42 +83,91 @@ public class HexBoard implements Board<HexCoordinate>
 		
 		return false;
 	}
-
+	
+	private boolean inYBoundary(HexCoordinate coord)
+	{
+		if (yMax == 0)
+		{
+			return true;
+		}
+		
+		else
+		{
+			if (coord.getY() >= 0 && coord.getY() <= getYMax())
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/*
 	 * @see escape.board.Board#putPieceAt(escape.piece.EscapePiece, escape.board.coordinate.Coordinate)
 	 */
 	// TODO
 	// implement this
 	@Override
-	public void putPieceAt(EscapePiece p, HexCoordinate coord)
+	public void putPieceAt(EscapePiece p, Coordinate coord)
 	{
-		boolean is_finite = (xMax == 0 && yMax == 0) ? false : true;
+		LocationType BLOCK = LocationType.BLOCK;
+		LocationType EXIT = LocationType.EXIT;
 		
-		if (p == null && pieces.containsKey(coord))
+		if (!coord.getClass().equals(HexCoordinate.class))
+		{
+			throw new EscapeException("Invalid Coordinate Type");
+		} 
+		
+		HexCoordinate hc = (HexCoordinate) coord;
+		
+		if (p == null && pieces.containsKey(hc))
 		{
 			pieces.remove(coord);
 		}
 		
-		else
+		// handling the special cases of the coordinate's location type
+		if (getLocationType(hc) != null)
 		{
-			// checking if it is a finite hex board
-			if (is_finite)
-			{
-				if (!insideBoard(coord))
-				{
-					throw new EscapeException("Not a Valid Hex Coordinate for this HexBoard");
-				}
+			if (getLocationType(hc).equals(EXIT))
+			{ 
+				return;
 			}
-			
-			pieces.put(coord, p);
+
+			else if (getLocationType(hc).equals(BLOCK))
+			{
+				throw new EscapeException("Cannot put piece on a Block");
+			}
 		}
+		if (insideBoard(hc))
+		{
+			pieces.put(hc, p);
+			return;
+		}
+		
+		throw new EscapeException("Unable to place piece on board");
 	}
 	
 	public void setLocationType(HexCoordinate c, LocationType lt)
 	{
-		hexes.put(c, lt);
+		if (insideBoard(c))
+		{
+			hexes.put(c, lt);
+		}
+		
+		else
+		{ 
+			throw new EscapeException("Coordinate not in board");
+		}
 	}
-
 	
+	public LocationType getLocationType(HexCoordinate c)
+	{
+		if (hexes.containsKey(c))
+		{
+			return hexes.get(c);
+		}
+		
+		return null;
+	}
 
 }

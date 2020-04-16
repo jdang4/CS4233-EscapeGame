@@ -27,7 +27,7 @@ public class HexCoordinate implements Coordinate
 	{
 		this.x = x;
 		this.y = y;
-	}
+	} 
 	
 	public static HexCoordinate makeCoordinate(int x, int y)
 	{
@@ -94,7 +94,7 @@ public class HexCoordinate implements Coordinate
 	{
 		return Objects.hash(x, y);
 	}
-
+ 
 	/*
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */

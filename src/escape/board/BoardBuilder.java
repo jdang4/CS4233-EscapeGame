@@ -45,50 +45,58 @@ public class BoardBuilder
 	public Board makeBoard()
 	{
 		Board board = null;
+		
+		return initializeBoard(board, bi.getLocationInitializers());
+		
+	}
+	
+	
+	private Board initializeBoard(Board board, LocationInitializer... initializers)
+	{
 		InitializeBoard initBoard = null;
 		
+		// initializing a hex board
 		if (bi.getCoordinateId().equals(CoordinateID.HEX))
 		{
 			board = new HexBoard(bi.getxMax(), bi.getyMax());
 			initBoard = new HexBoardInitializer();
 		}
-		
+  
 		else
 		{
+			// verify that the setup of the potential square board is finite
+			if (bi.getxMax() == 0 || bi.getyMax() == 0)
+			{
+				throw new EscapeException("Cannot make an infinte square board");
+			}
+
 			board = new SquareBoard(bi.getxMax(), bi.getyMax());
 			
+			// initializing a square board with orthosquare coordinates
 			if (bi.getCoordinateId().equals(CoordinateID.ORTHOSQUARE))
 			{
 				initBoard = new OrthoSquareBoardInitializer();
 			} 
 			
+			// initializing a square board with square coordinates
 			else if (bi.getCoordinateId().equals(CoordinateID.SQUARE))
 			{
 				initBoard = new SquareBoardInitializer();
 			}
 			
+			// given invalid coordinate id
 			else
 			{
 				throw new EscapeException("No CoordinateID detected");
 			}
-			
-		}
+
+		} 
 		
-		
+		// initializes the board with the proper configurations
 		initBoard.initializeBoard(board, bi.getLocationInitializers());
 		
-		return board;
-		
-		
+		// returns the initialized board
+		return board;	
 	}
-	
-	/*
-	private void initializeBoard(Board b, InitializeBoard init, LocationInitializer... initializers)
-	{
-		
-		init.initializeBoard(b, initializers);
-		
-	}
-	*/
 	
 }
