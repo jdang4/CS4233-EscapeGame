@@ -2,7 +2,7 @@
 <boardInitializer>
     <coordinateId>HEX</coordinateId>
     <locationInitializers>
-        <x>-2</x>
+        <x>2</x>
         <y>-2</y>
         <locationType>CLEAR</locationType>
         <player>PLAYER1</player>
@@ -16,7 +16,7 @@
     <locationInitializers>
     	<x>-5</x>
     	<y>-5</y>
-    	<locationType>EXIT</locationType></locationInitializers><xMax></xMax>
+    	<locationType>EXIT</locationType></locationInitializers><xMax>8</xMax>
     <yMax></yMax>
     
 </boardInitializer>

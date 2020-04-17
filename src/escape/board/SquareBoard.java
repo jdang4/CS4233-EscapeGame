@@ -149,15 +149,10 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>, Squa
 		}
 
 	}
-	
-	public LocationType getLocationType(SquaredShapeCoordinate c)
-	{
-		if (!c.getID().equals(this.id))
-		{
-			throw new EscapeException("Given invalid coordinate");
-		}
-		
-		else if (squares.containsKey(c))
+	 
+	private LocationType getLocationType(SquaredShapeCoordinate c)
+	{	
+		if (squares.containsKey(c))
 		{
 			return squares.get(c);
 		}

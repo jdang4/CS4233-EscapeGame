@@ -33,11 +33,127 @@ class BoardTest
 	@Test
 	void buildSquareBoard() throws Exception
 	{
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig1.xml"));
+		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-square.xml"));
 		Board b = bb.makeBoard();
 		assertNotNull(b);
 		
-		assertEquals(BoardType.SQUARE, ((SquareBoard) b).getBoardType());
+		assertTrue(((SquareBoard)b).getBoardType().equals(BoardType.SQUARE));
+	}
+	
+	@Test
+	void buildOrthoSquareBoard() throws Exception
+	{
+		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-ortho.xml"));
+		Board b = bb.makeBoard();
+		assertNotNull(b);
+		
+		// NOTE: my design treated an OrthoSquare board as just a Square Board
+		assertTrue(((SquareBoard)b).getBoardType().equals(BoardType.SQUARE));
+	}
+	
+	@Test
+	void buildHexBoard() throws Exception
+	{
+		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-hex.xml"));
+		Board b = bb.makeBoard();
+		assertNotNull(b);
+		
+		assertTrue(((HexBoard)b).getBoardType().equals(BoardType.HEX));
+	}
+	
+	@Test
+	void buildingNoCoordinateIDBoard() throws Exception
+	{	
+		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-no-coordinateID.xml"));
+		Assertions.assertThrows(EscapeException.class, () -> {
+			bb.makeBoard();
+			}
+		);
+	}
+	
+	@Test
+	void buildingInvalidCoordinateIDBoard() throws Exception
+	{	
+		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-infinite-square.xml"));
+		Assertions.assertThrows(EscapeException.class, () -> {
+			bb.makeBoard();
+			}
+		);
+	}
+	
+	@ParameterizedTest
+	@MethodSource("nullCoordinatesProvider")
+	void gettingNull(String fileName, Coordinate coord) throws Exception
+	{
+		BoardBuilder bb = new BoardBuilder(new File(fileName));
+		Board b = bb.makeBoard();
+
+		assertNull(b.getPieceAt(coord));
+	}
+
+	static Stream<Arguments> nullCoordinatesProvider()
+	{
+		return Stream.of(
+				Arguments.of(
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(8, 8)),
+				Arguments.of(
+						"config/board/BoardConfig-ortho.xml", OrthoSquareCoordinate.makeCoordinate(8, 8)),
+				Arguments.of(
+						"config/board/BoardConfig-hex.xml", HexCoordinate.makeCoordinate(-23, -29))
+				);
+
+	}
+	
+	// tests for getting incorrect coordinates
+	@ParameterizedTest
+	@MethodSource("wrongCoordinatesProvider")
+	void attemptingToGetPieceAtInvalidCoordinate(String fileName, Coordinate coord) throws Exception
+	{
+		BoardBuilder bb = new BoardBuilder(new File(fileName));
+		Board b = bb.makeBoard();
+
+		Assertions.assertThrows(EscapeException.class, () -> {
+			b.getPieceAt(coord);
+			}
+		);
+	}
+
+	static Stream<Arguments> wrongCoordinatesProvider()
+	{
+		return Stream.of(
+				Arguments.of(
+						"config/board/BoardConfig-square.xml", OrthoSquareCoordinate.makeCoordinate(2, 2)),
+				Arguments.of(
+						"config/board/BoardConfig-ortho.xml", HexCoordinate.makeCoordinate(2, 2)),
+				Arguments.of(
+						"config/board/BoardConfig-hex.xml", SquareCoordinate.makeCoordinate(-2, -2))
+				);
+
+	}
+	
+	@ParameterizedTest
+    @MethodSource("invalidCoordinatesProvider")
+	void addingLocationTypeToInvalidCoordinate(String fileName) throws Exception
+	{
+		BoardBuilder bb = new BoardBuilder(new File(fileName));
+		
+		Assertions.assertThrows(EscapeException.class, () -> {
+			bb.makeBoard();
+			}
+		);
+	}
+	
+	static Stream<Arguments> invalidCoordinatesProvider()
+	{
+		return Stream.of(
+				Arguments.of(
+						"config/board/BoardConfig-square-invalid-LocationTypeCoordinate.xml"),
+				Arguments.of(
+						"config/board/BoardConfig-ortho-invalid-LocationTypeCoordinate.xml"),
+				Arguments.of(
+						"config/board/BoardConfig-hex-invalid-LocationTypeCoordinate.xml")
+				);
+
 	}
 	
 	@ParameterizedTest
@@ -60,9 +176,9 @@ class BoardTest
 	{
 		return Stream.of(
 				Arguments.of(
-						"config/board/BoardConfig1.xml", SquareCoordinate.makeCoordinate(1, 1)),
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(1, 1)),
 				Arguments.of(
-						"config/board/BoardConfig1.xml", SquareCoordinate.makeCoordinate(2, 2)),
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(2, 2)),
 				Arguments.of(
 						"config/board/BoardConfig-ortho.xml", OrthoSquareCoordinate.makeCoordinate(2, 2)),
 				Arguments.of(
@@ -96,15 +212,15 @@ class BoardTest
 	{
 		return Stream.of(
 				Arguments.of(
-						"config/board/BoardConfig1.xml", SquareCoordinate.makeCoordinate(0, 0)),
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(0, 0)),
 				Arguments.of(
-						"config/board/BoardConfig1.xml", SquareCoordinate.makeCoordinate(3, 5)),
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(3, 5)),
 				Arguments.of(
-						"config/board/BoardConfig1.xml", SquareCoordinate.makeCoordinate(9, 15)),
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(9, 15)),
 				Arguments.of(
-						"config/board/BoardConfig1.xml", OrthoSquareCoordinate.makeCoordinate(3, 3)),
+						"config/board/BoardConfig-square.xml", OrthoSquareCoordinate.makeCoordinate(3, 3)),
 				Arguments.of(
-						"config/board/BoardConfig1.xml", HexCoordinate.makeCoordinate(3, 3)),
+						"config/board/BoardConfig-square.xml", HexCoordinate.makeCoordinate(3, 3)),
 				Arguments.of(
 						"config/board/BoardConfig-ortho.xml", OrthoSquareCoordinate.makeCoordinate(0, 2)),
 				Arguments.of(
@@ -127,75 +243,63 @@ class BoardTest
 				 
 	}
 	
-	@Test
-	void buildBoard2() throws Exception
+	@ParameterizedTest
+    @MethodSource("addingNullCoordinatesProvider")
+	void addingNullToExistingPiece(String fileName, Coordinate coord) throws Exception
 	{
-		
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig2.xml"));
-		
-		Assertions.assertThrows(EscapeException.class, () -> {
-			bb.makeBoard();
-			}
-		);
-	}
-	
-	/*
-	@Test
-	void buildBoard3() throws Exception
-	{
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig1.xml"));
-		Board test = bb.makeBoard();
-		assertNotNull(test);
-		
-		assertEquals(LocationType.BLOCK, ((SquareBoard)test).getLocationType(SquareCoordinate.makeCoordinate(3, 5)));
-		// Now I will do some tests on this board and its contents.
-	}
-	*/
-	
-	/*
-	@Test
-	void buildBoardHex1() throws Exception
-	{
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-hex.xml"));
-		Board test = bb.makeBoard();
-		assertNotNull(test);
-		
-		EscapePiece newPiece = new EscapePiece(Player.PLAYER1, PieceName.FOX);
-		test.putPieceAt(newPiece, HexCoordinate.makeCoordinate(-100, -500));
-		
-		assertNotNull(test.getPieceAt(HexCoordinate.makeCoordinate(-100, -500)));
-		// Now I will do some tests on thotheris board and its contents.
-		 
-	}
-	
-	@Test
-	void buildBoardOrtho1() throws Exception
-	{
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-ortho.xml"));
-		Board test = bb.makeBoard();
-		assertNotNull(test);
-		
-		EscapePiece newPiece = new EscapePiece(Player.PLAYER1, PieceName.FOX);
-		test.putPieceAt(newPiece, OrthoSquareCoordinate.makeCoordinate(5, 5));
-		
-		assertNotNull(test.getPieceAt(OrthoSquareCoordinate.makeCoordinate(5, 5))); 
-	}
-	
-	@Test
-	void buildBoardOrtho2() throws Exception
-	{
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-ortho.xml"));
-		Board test = bb.makeBoard();
-		assertNotNull(test);
-		
+		BoardBuilder bb = new BoardBuilder(new File(fileName));
+		Board b = bb.makeBoard();
 		EscapePiece newPiece = new EscapePiece(Player.PLAYER1, PieceName.FOX);
 		
+		b.putPieceAt(newPiece, coord);
 		
-		Assertions.assertThrows(EscapeException.class, () -> {
-			test.putPieceAt(newPiece, SquareCoordinate.makeCoordinate(5, 5));
-			}
-		);
-		 
+		assertNotNull(b.getPieceAt(coord));
+		
+		b.putPieceAt(null, coord);
+		
+		assertNull(b.getPieceAt(coord));
+		
 	}
-	*/
+	
+	static Stream<Arguments> addingNullCoordinatesProvider()
+	{
+		return Stream.of(
+				Arguments.of(
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(6, 5)),
+				Arguments.of(
+						"config/board/BoardConfig-ortho.xml", OrthoSquareCoordinate.makeCoordinate(1, 5)),
+				Arguments.of(
+						"config/board/BoardConfig-hex.xml", HexCoordinate.makeCoordinate(-2, -9))
+				);
+				 
+	}
+	
+	@ParameterizedTest
+    @MethodSource("exitCoordinatesProvider")
+	void addingPieceToExit(String fileName, Coordinate coord) throws Exception
+	{
+		BoardBuilder bb = new BoardBuilder(new File(fileName));
+		Board b = bb.makeBoard();
+		EscapePiece newPiece = new EscapePiece(Player.PLAYER1, PieceName.FOX);
+		
+		b.putPieceAt(newPiece, coord);
+		
+		assertNull(b.getPieceAt(coord));
+		
+	}
+	
+	static Stream<Arguments> exitCoordinatesProvider()
+	{
+		return Stream.of(
+				Arguments.of(
+						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(5, 8)),
+				Arguments.of(
+						"config/board/BoardConfig-ortho.xml", OrthoSquareCoordinate.makeCoordinate(5, 8)),
+				Arguments.of(
+						"config/board/BoardConfig-hex.xml", HexCoordinate.makeCoordinate(-5, -5))
+				);
+				 
+	}
+	
+	
 }

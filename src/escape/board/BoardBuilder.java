@@ -55,8 +55,13 @@ public class BoardBuilder
 	{
 		InitializeBoard initBoard = null;
 		
+		if (bi.getCoordinateId() == null)
+		{
+			throw new EscapeException("No CoordinateID detected");
+		}
+		
 		// initializing a hex board
-		if (bi.getCoordinateId().equals(CoordinateID.HEX))
+		else if (bi.getCoordinateId().equals(CoordinateID.HEX))
 		{
 			board = new HexBoard(bi.getxMax(), bi.getyMax());
 			initBoard = new HexBoardInitializer();
@@ -79,15 +84,9 @@ public class BoardBuilder
 			} 
 			
 			// initializing a square board with square coordinates
-			else if (bi.getCoordinateId().equals(CoordinateID.SQUARE))
-			{
-				initBoard = new SquareBoardInitializer();
-			}
-			
-			// given invalid coordinate id
 			else
 			{
-				throw new EscapeException("No CoordinateID detected");
+				initBoard = new SquareBoardInitializer();
 			}
 
 		} 
