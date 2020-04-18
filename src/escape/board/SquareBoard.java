@@ -23,7 +23,7 @@ import escape.piece.EscapePiece;
  * would naturally add methods based upon theire design.
  * @version Apr 2, 2020
  */
-public class SquareBoard extends GenericBoard implements Board<Coordinate>, SquareBoardInfo
+public class SquareBoard extends GenericBoard implements Board<Coordinate>
 {
 	Map<SquaredShapeCoordinate, LocationType> squares;
 	Map<SquaredShapeCoordinate, EscapePiece> pieces;
@@ -36,7 +36,7 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>, Squa
 		squares = new HashMap<SquaredShapeCoordinate, LocationType>();
 		type = BoardType.SQUARE;
 	} 
-	 
+	  
 	private CoordinateID getCoordinateID(Coordinate c)
 	{
 		if (c.getClass().equals(SquareCoordinate.class))
