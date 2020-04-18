@@ -10,8 +10,9 @@
  * Copyright ©2016 Gary F. Pollice
  *******************************************************************************/
 
-package escape.board;
+package escape.board.initializer;
 
+import escape.board.Board;
 import escape.util.LocationInitializer;
 
 /**

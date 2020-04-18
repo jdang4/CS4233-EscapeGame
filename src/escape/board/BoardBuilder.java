@@ -15,6 +15,7 @@ import static escape.board.LocationType.CLEAR;
 import java.io.*;
 import javax.xml.bind.*;
 import escape.board.coordinate.*;
+import escape.board.initializer.*;
 import escape.exception.EscapeException;
 import escape.piece.EscapePiece;
 import escape.util.*;
@@ -46,27 +47,28 @@ public class BoardBuilder
 	{
 		Board board = null;
 		
-		return initializeBoard(board, bi.getLocationInitializers());
-		
-	}
-	
-	
-	private Board initializeBoard(Board board, LocationInitializer... initializers)
-	{
-		InitializeBoard initBoard = null;
-		
 		if (bi.getCoordinateId() == null)
 		{
 			throw new EscapeException("No CoordinateID detected");
 		}
 		
+		return initializeBoard(board, bi.getLocationInitializers());
+		
+	}
+	
+	 
+	private Board initializeBoard(Board board, LocationInitializer... initializers)
+	{
+		InitializeBoard initBoard = null;
+		
 		// initializing a hex board
-		else if (bi.getCoordinateId().equals(CoordinateID.HEX))
+		if (bi.getCoordinateId().equals(CoordinateID.HEX)) 
 		{
 			board = new HexBoard(bi.getxMax(), bi.getyMax());
 			initBoard = new HexBoardInitializer();
 		}
-  
+		
+		// initializing a square board
 		else
 		{
 			// verify that the setup of the potential square board is finite
@@ -88,7 +90,6 @@ public class BoardBuilder
 			{
 				initBoard = new SquareBoardInitializer();
 			}
-
 		} 
 		
 		// initializes the board with the proper configurations
