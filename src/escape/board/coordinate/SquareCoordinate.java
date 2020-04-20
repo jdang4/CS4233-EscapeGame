@@ -19,7 +19,7 @@ import escape.exception.EscapeException;
  * 
  * @version Mar 27, 2020
  */
-public class SquareCoordinate implements Coordinate, SquaredShapeCoordinate
+public class SquareCoordinate implements Coordinate
 {
     private final int x;
     private final int y;
@@ -82,28 +82,17 @@ public class SquareCoordinate implements Coordinate, SquaredShapeCoordinate
 		return distance;
 	}
 	
-	/*
-	 * @see escape.board.coordinate.SquaredShapeCoordinate#getID()
+	/**
+	 * @return the x
 	 */
-	@Override
-	public CoordinateID getID()
-	{
-		return CoordinateID.SQUARE;
-	}
-	
-	/*
-	 * @see escape.board.coordinate.SquaredShapeCoordinate#getX()
-	 */
-	@Override
 	public int getX()
 	{
 		return x;
 	}
 
-	/*
-	 * @see escape.board.coordinate.SquaredShapeCoordinate#getY()
+	/**
+	 * @return the y
 	 */
-	@Override
 	public int getY()
 	{
 		return y;

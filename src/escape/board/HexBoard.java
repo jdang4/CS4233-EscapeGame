@@ -106,7 +106,7 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		// axis is not infinite
 		else
 		{
-			if (coord.getX() >= 0 && coord.getX() <= getXMax())
+			if (coord.getX() >= 0 && coord.getX() < getXMax())
 			{
 				return true;
 			}
@@ -135,7 +135,7 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		// axis is not infinite
 		else
 		{
-			if (coord.getY() >= 0 && coord.getY() <= getYMax())
+			if (coord.getY() >= 0 && coord.getY() < getYMax())
 			{
 				return true;
 			}

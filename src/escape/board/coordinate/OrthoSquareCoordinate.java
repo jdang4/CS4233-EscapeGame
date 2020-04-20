@@ -19,7 +19,7 @@ import escape.exception.EscapeException;
  * Description
  * @version Apr 12, 2020
  */
-public class OrthoSquareCoordinate implements Coordinate, SquaredShapeCoordinate
+public class OrthoSquareCoordinate implements Coordinate
 {
 	private final int x;
 	private final int y;
@@ -65,32 +65,20 @@ public class OrthoSquareCoordinate implements Coordinate, SquaredShapeCoordinate
 		return (xDistance + yDistance);
 	}
 	
-	/*
-	 * @see escape.board.coordinate.SquaredShapeCoordinate#getX()
+	/**
+	 * @return the x
 	 */
-	@Override
 	public int getX()
 	{
 		return x;
 	}
 
-	
-	/*
-	 * @see escape.board.coordinate.SquaredShapeCoordinate#getY()
+	/**
+	 * @return the y
 	 */
-	@Override
 	public int getY()
 	{
 		return y;
-	}
-	
-	/*
-	 * @see escape.board.coordinate.SquaredShapeCoordinate#getID()
-	 */
-	@Override
-	public CoordinateID getID()
-	{
-		return CoordinateID.ORTHOSQUARE;
 	}
 
 	/*

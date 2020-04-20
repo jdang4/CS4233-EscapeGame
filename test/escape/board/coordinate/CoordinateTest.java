@@ -119,13 +119,7 @@ class CoordinateTest
 		assertEquals(1, c.getY());
 	}
     
-	/**
-	 * This type of test gets its arguments via dependency injection from moveTestProvider();
-	 * @param initializers set up the board
-	 * @param from move from this coordinate
-	 * @param to move to this coordinate
-	 * @param expected the expected result calling canMove() on the piece at "from"
-	 */
+	
     @ParameterizedTest
     @MethodSource("squareDistanceTestProvider")
     void testingSquareDistanceTo(List<SquareCoordinate> initializers, int expected)
@@ -153,13 +147,6 @@ class CoordinateTest
 				);
     }
 	
-	/**
-	 * This type of test gets its arguments via dependency injection from moveTestProvider();
-	 * @param initializers set up the board
-	 * @param from move from this coordinate
-	 * @param to move to this coordinate
-	 * @param expected the expected result calling canMove() on the piece at "from"
-	 */
     @ParameterizedTest
     @MethodSource("hexDistanceTestProvider")
     void testingHexDistanceTo(List<HexCoordinate> initializers, int expected)
@@ -187,13 +174,6 @@ class CoordinateTest
 				);
     }
 	
-	/**
-	 * This type of test gets its arguments via dependency injection from moveTestProvider();
-	 * @param initializers set up the board
-	 * @param from move from this coordinate
-	 * @param to move to this coordinate
-	 * @param expected the expected result calling canMove() on the piece at "from"
-	 */
     @ParameterizedTest
     @MethodSource("orthosquareDistanceTestProvider")
     void testingOrthoSquareDistanceTo(List<OrthoSquareCoordinate> initializers, int expected)
@@ -217,16 +197,6 @@ class CoordinateTest
 				Arguments.of(
 						makeInitializers(id, 5, 5, 3, 1), 6)
 				);
-    }
-    
-    @Test
-    void testingCoordinateID()
-    {
-    	SquareCoordinate sc = SquareCoordinate.makeCoordinate(1, 1);
-    	OrthoSquareCoordinate osc = OrthoSquareCoordinate.makeCoordinate(2, 2);
-    	
-    	assertEquals(CoordinateID.SQUARE, sc.getID());
-    	assertEquals(CoordinateID.ORTHOSQUARE, osc.getID());
     }
     
     @Test
