@@ -13,6 +13,7 @@
 package escape.board.coordinate;
 
 import java.util.Objects;
+import escape.exception.EscapeException;
 
 /**
  * Description
@@ -29,6 +30,16 @@ public class OrthoSquareCoordinate implements Coordinate, SquaredShapeCoordinate
 		this.y = y;
 	}
 	
+	/**
+	 * This method is called to create a HexCoordinate object with the
+	 * given values
+	 * 
+	 * @param x 
+	 * 			denotes the x-axis value
+	 * @param y
+	 * 			denotes the y-axis value
+	 * @return a new HexCoordinate object with the provided values
+	 */
 	public static OrthoSquareCoordinate makeCoordinate(int x, int y)
 	{
 		return new OrthoSquareCoordinate(x, y);
@@ -41,6 +52,12 @@ public class OrthoSquareCoordinate implements Coordinate, SquaredShapeCoordinate
 	@Override
 	public int distanceTo(Coordinate c)
 	{
+		// verifying if valid coordinate type
+		if (!c.getClass().equals(OrthoSquareCoordinate.class))
+		{
+			throw new EscapeException("Invalid Coordinate Type");
+		}
+		
 		OrthoSquareCoordinate osc = (OrthoSquareCoordinate) c;
 		int xDistance = Math.abs(osc.getX() - x);
 		int yDistance = Math.abs(osc.getY() - y);
@@ -48,22 +65,29 @@ public class OrthoSquareCoordinate implements Coordinate, SquaredShapeCoordinate
 		return (xDistance + yDistance);
 	}
 	
-	/**
-	 * @return the x
+	/*
+	 * @see escape.board.coordinate.SquaredShapeCoordinate#getX()
 	 */
+	@Override
 	public int getX()
 	{
 		return x;
 	}
 
-	/**
-	 * @return the y
+	
+	/*
+	 * @see escape.board.coordinate.SquaredShapeCoordinate#getY()
 	 */
+	@Override
 	public int getY()
 	{
 		return y;
 	}
 	
+	/*
+	 * @see escape.board.coordinate.SquaredShapeCoordinate#getID()
+	 */
+	@Override
 	public CoordinateID getID()
 	{
 		return CoordinateID.ORTHOSQUARE;

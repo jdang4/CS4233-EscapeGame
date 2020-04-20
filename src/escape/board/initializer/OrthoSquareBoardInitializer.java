@@ -19,15 +19,19 @@ import escape.piece.EscapePiece;
 import escape.util.LocationInitializer;
 
 /**
- * Description
+ * This class provides the implementations to initialize a square board 
+ * with OrthoSquare Coordinates
  * @version Apr 14, 2020
  */
 public class OrthoSquareBoardInitializer implements InitializeBoard
 { 
+	/*
+	 * @see escape.board.initializer.InitializeBoard#initializeBoard(escape.board.Board, escape.util.LocationInitializer[])
+	 */
 	@Override
 	public void initializeBoard(Board board, LocationInitializer... initializers)
 	{
-		SquareBoard b = (SquareBoard) board;
+		OrthoSquareBoard b = (OrthoSquareBoard) board;
 		b.setCoordinateID(CoordinateID.ORTHOSQUARE);
 		 
 		for (LocationInitializer li : initializers) {

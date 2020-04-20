@@ -13,6 +13,7 @@
 package escape.board.coordinate;
 
 import java.util.Objects;
+import escape.exception.EscapeException;
 
 /**
  * Description
@@ -29,6 +30,16 @@ public class HexCoordinate implements Coordinate
 		this.y = y;
 	} 
 	
+	/**
+	 * This method is called to create a HexCoordinate object with the
+	 * given values
+	 * 
+	 * @param x 
+	 * 			denotes the x-axis value
+	 * @param y
+	 * 			denotes the y-axis value
+	 * @return a new HexCoordinate object with the provided values
+	 */
 	public static HexCoordinate makeCoordinate(int x, int y)
 	{
 		return new HexCoordinate(x, y);
@@ -46,6 +57,12 @@ public class HexCoordinate implements Coordinate
 	@Override
 	public int distanceTo(Coordinate c)
 	{
+		// verifying if valid coordinate type
+		if (!c.getClass().equals(HexCoordinate.class))
+		{
+			throw new EscapeException("Invalid Coordinate Type");
+		}
+		
 		HexCoordinate hc = (HexCoordinate) c;
 		
 		int dx = hc.getX() - x;

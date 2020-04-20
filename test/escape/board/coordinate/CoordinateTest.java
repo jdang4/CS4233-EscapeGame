@@ -17,9 +17,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import escape.exception.EscapeException;
 
 
 /**
@@ -223,11 +224,32 @@ class CoordinateTest
     {
     	SquareCoordinate sc = SquareCoordinate.makeCoordinate(1, 1);
     	OrthoSquareCoordinate osc = OrthoSquareCoordinate.makeCoordinate(2, 2);
-    	HexCoordinate hc = HexCoordinate.makeCoordinate(0, 0);
     	
     	assertEquals(CoordinateID.SQUARE, sc.getID());
     	assertEquals(CoordinateID.ORTHOSQUARE, osc.getID());
-    	//assertEquals(CoordinateID.HEX, hc.g)
+    }
+    
+    @Test
+    void testingInvalidCoordinateDistanceTo()
+    {
+    	SquareCoordinate sc = SquareCoordinate.makeCoordinate(1, 1);
+    	OrthoSquareCoordinate osc = OrthoSquareCoordinate.makeCoordinate(2, 2);
+    	HexCoordinate hc = HexCoordinate.makeCoordinate(5, 5);
+    	
+    	Assertions.assertThrows(EscapeException.class, () -> {
+			sc.distanceTo(osc);
+			}
+		);
+    	
+    	Assertions.assertThrows(EscapeException.class, () -> {
+			hc.distanceTo(sc);
+			}
+		);
+    	
+    	Assertions.assertThrows(EscapeException.class, () -> {
+			osc.distanceTo(hc);
+			}
+		);
     }
     
     @Test

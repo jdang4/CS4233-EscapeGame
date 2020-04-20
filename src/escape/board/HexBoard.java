@@ -18,7 +18,7 @@ import escape.exception.EscapeException;
 import escape.piece.EscapePiece;
 
 /**
- * Description
+ * The implementation of a Hex Board
  * @version Apr 12, 2020
  */
 public class HexBoard extends GenericBoard implements Board<Coordinate>
@@ -26,7 +26,6 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 	Map<HexCoordinate, LocationType> hexes;
 	Map<HexCoordinate, EscapePiece> pieces;
 	 
-	//private final int xMax, yMax;
 	public HexBoard(int xMax, int yMax)
 	{
 		super(xMax, yMax);
@@ -34,16 +33,29 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		hexes = new HashMap<HexCoordinate, LocationType>();
 		type = BoardType.HEX;
 	}
-	 
+	
+	/*
+	 * @see escape.board.GenericBoard#sameCoordinate(escape.board.coordinate.Coordinate)
+	 */
+	@Override
+	protected boolean sameCoordinate(Coordinate c)
+	{
+		if (c.getClass().equals(HexCoordinate.class))
+		{
+			return true; 
+		}
+		
+		return false;
+	}
+	
 	/*
 	 * @see escape.board.Board#getPieceAt(escape.board.coordinate.Coordinate)
 	 */
-	//TODO
-	// implement this
 	@Override
 	public EscapePiece getPieceAt(Coordinate coord)
 	{
-		if (!coord.getClass().equals(HexCoordinate.class))
+		// verify if the coordinate has the correct id
+		if (!sameCoordinate(coord))
 		{
 			throw new EscapeException("Invalid Coordinate Type");
 		} 
@@ -57,6 +69,15 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		return null;
 	}
 	
+	/**
+	 * This method is used to determine if the given coordinate is within the 
+	 * boundary (if any) of the board
+	 * 
+	 * @param coord 
+	 * 			the coordinate to check for if it's inside the board's boundary
+	 * @return whether the coordinate is within the board:
+	 * 			true -> in the board, false -> not in the board
+	 */
 	private boolean insideBoard(HexCoordinate coord)
 	{
 		boolean validXBoundary = inXBoundary(coord);
@@ -65,14 +86,24 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		return (validXBoundary && validYBoundary);
 	}
 	
+	/**
+	 * This method is used to determine if the given coordinate's x-value is
+	 * within the board's boundary (if any)
+	 * 
+	 * @param coord 
+	 * 			the coordinate to check for if it's inside the board's boundary
+	 * @return whether the coordinate is within the board:
+	 * 			true -> in the board, false -> not in the board
+	 */
 	private boolean inXBoundary(HexCoordinate coord) 
 	{
-		// infinite rows
+		// just return true if x-axis is infinite
 		if (xMax == 0)
 		{
 			return true;
 		}
 		
+		// axis is not infinite
 		else
 		{
 			if (coord.getX() >= 0 && coord.getX() <= getXMax())
@@ -84,13 +115,24 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		return false;
 	}
 	
+	/**
+	 * This method is used to determine if the given coordinate's y-value is within
+	 * the board's boundary (if any)
+	 * 
+	 * @param coord 
+	 * 			the coordinate to check for if it's inside the board's boundary
+	 * @return whether the coordinate is within the board:
+	 * 			true -> in the board, false -> not in the board
+	 */
 	private boolean inYBoundary(HexCoordinate coord)
 	{
+		// just return true if this y-axis is infinite
 		if (yMax == 0)
 		{
 			return true;
 		}
 		
+		// axis is not infinite
 		else
 		{
 			if (coord.getY() >= 0 && coord.getY() <= getYMax())
@@ -105,15 +147,13 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 	/*
 	 * @see escape.board.Board#putPieceAt(escape.piece.EscapePiece, escape.board.coordinate.Coordinate)
 	 */
-	// TODO
-	// implement this
 	@Override
 	public void putPieceAt(EscapePiece p, Coordinate coord)
 	{
 		LocationType BLOCK = LocationType.BLOCK;
 		LocationType EXIT = LocationType.EXIT;
 		
-		if (!coord.getClass().equals(HexCoordinate.class))
+		if (!sameCoordinate(coord))
 		{
 			throw new EscapeException("Invalid Coordinate Type");
 		} 
@@ -147,6 +187,14 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		throw new EscapeException("Unable to place piece on board");
 	}
 	
+	/**
+	 * This method is called to set a location type on the hex board
+	 * 
+	 * @param c 
+	 * 			the coordinate to add the location type to on the board
+	 * @param lt
+	 * 			the location type to add to the board
+	 */
 	public void setLocationType(HexCoordinate c, LocationType lt)
 	{
 		if (insideBoard(c))
@@ -160,6 +208,14 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		}
 	}
 	
+	/**
+	 * This method is called to get the location type at a specific coordinate
+	 * on the board
+	 * 
+	 * @param c
+	 * 			the coordinate to get the location type
+	 * @return the locationType if it exists, else null
+	 */
 	public LocationType getLocationType(HexCoordinate c)
 	{
 		if (hexes.containsKey(c))

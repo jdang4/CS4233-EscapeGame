@@ -1,0 +1,113 @@
+TDD TODO LIST
+Jonathan Dang
+2020 D-term
+Escape Alpha
+
+Coordinate Tests
+===========================
+TESTING COORDINATE EQUALS WITH SAME VALUE
+1. Square Coordinate(1, 1) == Square Coordinate(1, 1) = true
+2. OrthoSquare Coordinate(1, 1) == OrthoSquare Coordinate (1, 1) = true
+3. Hex Coordinate(0, 0) == Hex Coordinate(0, 0) = true
+
+TESTING COORDINATE EQUALS WITH SAME OBJECT
+4. Square Coordinate(1, 1) == Square Coordinate(1, 1) = true
+5. OrthoSquare Coordinate(1, 1) == OrthoSquare Coordinate (1, 1) = true
+6. Hex Coordinate(0, 0) == Hex Coordinate(0, 0) = true
+
+TESTING COORDINATE EQUALS WITH DIFFERENT TYPES
+7. Square Coordinate(1, 1) == Hex Coordinate(1, 1) = false 
+8. Hex Coordinate(1, 1) == OrthoSquare Coordinate(1, 1) = false
+9. OrthoSquare Coordinate(1, 1) == Square Coordinate(1, 1) = false
+
+TESTING COORDINATE WITH DIFFERENT VALUE
+10. Square Coordinate(1, 1) == Square Coordinate(1, 2) = false
+11. OrthoSquare Coordinate(1, 1) == OrthoSquare Coordinate (1, 2) = false
+12. Hex Coordinate(0, 0) == Hex Coordinate(0, 1) = false
+
+TESTING MAKE COORDINATE
+13. Square Coordinate(1, 1) == not null = true
+14. OrthoSquare Coordinate(1, 1) == not null = true
+15. Hex Coordinate(1, 1) == not null = true
+
+TESTING SQUARE COORDINATE DISTANCE
+16. Square Coordinate(1, 1) -> (2, 2) == 1 
+17. Square Coordinate(1, 2) -> (3, 5) == 3
+18. Square Coordinate(1, 1) -> (1, 8) == 7
+19. Square Coordinate(1, 1) -> (6, 1) == 5
+20. Square Coordinate(1, 1) -> (8, 8) == 7    
+
+TESTING ORTHOSQUARE COORDINATE DISTANCE
+21. OrthoSquare Coordinate(1, 2) -> (3, 5) == 5
+22. OrthoSquare Coordinate(1, 1) -> (2, 2) == 2
+23. OrthoSquare Coordinate(1, 1) -> (8, 8) == 14
+24. OrthoSquare Coordinate(5, 5) -> (3, 1) == 6
+
+TESTING HEX COORDINATE DISTANCE
+25. Hex Coordinate(0, 0) -> (-1, 2) == 2
+26. Hex Coordinate(-1, 2) -> (2, -2) == 4
+27. Hex Coordinate(0, 0) -> (0, -2) == 2
+28. Hex Coordinate(0, 2) -> (-2, 0) == 4
+29. Hex Coordinate(-1, 2) -> (3, 0) == 4
+
+TESTING COORDINATE ID
+30. Square Coordinate == SQUARE = true
+31. OrthoSquare Coordinate == ORTHOSQUARE = true
+32. Hex Coordinate == HEX = true
+
+
+Board Tests
+=======================================
+TESTING MAKE BOARD
+33. Making Square Board == not null = true
+34. Making Square Board -> board type == SQUARE = true
+35. Making OrthoSquare Board == not null = true
+36. Making OrthoSquare Board -> board type == SQUARE = true
+37. Making Hex Board == not null = true
+38. Making Hex Board -> board type == HEX = true
+
+BUILDING INVALID BOARD
+40. Making Board with no CoordinateID == throws EscapeException = true
+41. Making Infinite Square Board == throws EscapeException = true
+
+TESTING GETTING A PIECE ON BOARD 
+42. Getting Piece on Non-Occupied Space on Square Board == null = true
+43. Getting Piece on Non-Occupied Space on OrthoSquare Board == null = true
+44. Getting Piece on Non-Occupied Space on Hex Board == null = true
+45. Getting Piece at OrthoSquare Coordinate on Square Board with Square Coordinates == throws EscapeException = true
+46. Getting Piece at Hex Coordinate on Square Board with OrthoSquare Coordinates == throws EscapeException = true
+47. Getting Piece at Square Coordinate on Hex Board == throws EscapeException = true
+
+TESTING ADDING LOCATION TYPE TO INVALID COORDINATE ON BOARD
+48. Setting a Location Type on Invalid Coordinate on Square Board with Square Coordinates == throws EscapeException = true
+49. Setting a Location Type on Invalid Coordinate on Square Board with OrthoSquare Coordinates == throws EscapeException = true
+50. Setting a Location Type on Invalid Coordinate on Hex Board == throws EscapeException = true
+
+TESTING PUTTING A PIECE ON BOARD
+51. Adding Piece with Square Coordinate(1, 1) to Square Board with Square Coordinates == not null = true
+52. Adding Piece with Square Coordinate(2, 2) to Square Board with Square Coordinates == not null = true
+53. Adding Piece with OrthoSquare Coordinate(2, 2) to Square Board with OrthoSquare Coordinates == not null = true
+54. Adding Piece with Hex Coordinate(0, 0) to Hex Board (Infinite) == not null = true
+55. Adding Piece with Hex Coordinate(-500, 300) to Hex Board (Infinite) == not null = true
+56. Adding Piece with Hex Coordinate(-400, 5) to Hex Board (X-axis Infinite Only, Y-axis=8) == not null = true
+57. Adding Piece with Hex Coordinate(0, 100) to Hex Board (Y-axis Infinite Only, X-axis=8) == not null = true
+58. Adding Piece with Square Coordinate(0, 0) to Square Board with Square Coordinates == throws EscapeException = true
+59. Adding Piece with Square Coordinate(3, 5) to a BREAK on Square Board with Square Coordinates == throws EscapeException = true
+60. Adding Piece with Square Coordinate(9, 15) to Square Board with Square Coordinates == throws EscapeException = true
+61. Adding Piece with OrthoSquare Coordinate(3, 3) to Square Board with Square Coordinates == throws EscapeException = true
+62. Adding Piece with Hex Coordinate(3, 3) to Square Board with Square Coordinates == throws EscapeException = true
+63. Adding Piece with OrthoSquare Coordinate(0, 2) to Square Board with OrthoSquare Coordinates == throws EscapeException = true
+64. Adding Piece with OrthoSquare Coordinate(0, 2) to BREAK on Square Board with OrthoSquare Coordinates == throws EscapeException = true
+65. Adding Piece with Square Coordinate(3, 3) to Square Board with OrthoSquare Coordinates == throws EscapeException = true
+66. Adding Piece with Hex Coordinate(3, 3) to Square Board with OrthoSquare Coordinates == throws EscapeException = true
+67. Adding Piece with Hex Coordinate(3, 5) to BREAK on Hex Board == throws EscapeException = true
+68. Adding Piece with Square Coordinate(8, 8) to Hex Board == throws EscapeException = true
+69. Adding Piece with OrthoSquare Coordinate(8, 8) to Hex Board == throws EscapeException = true
+70. Adding Piece with Hex Coordinate(-400, 9) to Hex Board (X-axis Infinite Only, Y-axis=8) == throws EscapeException = true
+71. Adding Piece with Hex Coordinate(-1, 25) to Hex Board (Y-axis Infinite Only, X-axis=8) == throws EscapeException = true
+72. Adding Null with Square Coordinate(6, 5) to Square Board where existing piece exists at coordinate == null = true
+73. Adding Null with OrthoSquare Coordinate(1, 5) to Square Board where existing piece exists at coordinate == null = true
+74. Adding Null with Hex Coordinate(-2, -9) to Hex Board where existing piece exists at coordinate == null = true
+75. Adding Piece with Square Coordinate(5, 8) to a EXIT on Square Board with Square Coordinates == null = true
+76. Adding Piece with OrthoSquare Coordinate(5, 8) to a EXIT on Square Board with OrthoSquare Coordinates == null = true
+77. Adding Piece with Hex Coordinate(-5, -5) to a EXIT on Hex Board == null = true

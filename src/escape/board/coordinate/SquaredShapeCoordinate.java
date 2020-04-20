@@ -18,7 +18,24 @@ package escape.board.coordinate;
  */
 public interface SquaredShapeCoordinate extends Coordinate
 {
+	
+	/**
+	 * This method is called to get the y value of the coordinate
+	 * @return the y value of the coordinate
+	 */
 	public int getX();
+	
+	/**
+	 * This method is called to get the y value of the coordinate
+	 * @return the y value of the coordinate
+	 */
 	public int getY();
+	
+	/**
+	 * This method is called to get the coordinate id of the calling Coordinate
+	 * class
+	 * 
+	 * @return the coordinateID
+	 */
 	public CoordinateID getID();
 }

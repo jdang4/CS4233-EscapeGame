@@ -12,6 +12,7 @@
 package escape.board.coordinate;
 
 import java.util.Objects;
+import escape.exception.EscapeException;
 
 /**
  * This is an example of how a SquareCoordinate might be organized.
@@ -29,6 +30,16 @@ public class SquareCoordinate implements Coordinate, SquaredShapeCoordinate
     	this.y = y;
     }
     
+    /**
+	 * This method is called to create a HexCoordinate object with the
+	 * given values
+	 * 
+	 * @param x 
+	 * 			denotes the x-axis value
+	 * @param y
+	 * 			denotes the y-axis value
+	 * @return a new HexCoordinate object with the provided values
+	 */
     public static SquareCoordinate makeCoordinate(int x, int y)
     {
     	return new SquareCoordinate(x, y);
@@ -37,10 +48,15 @@ public class SquareCoordinate implements Coordinate, SquaredShapeCoordinate
     /*
 	 * @see escape.board.coordinate.Coordinate#distanceTo(escape.board.coordinate.Coordinate)
 	 */
-    // I  ASSUME THIS CAN ONLY WORK FOR SQUARE COORDINATES
 	@Override
 	public int distanceTo(Coordinate c)
 	{
+		// verifying if correct coordinate type
+		if (!c.getClass().equals(SquareCoordinate.class))
+		{
+			throw new EscapeException("Invalid Coordinate Type");
+		}
+		
 		SquareCoordinate sc = (SquareCoordinate) c;
 		
 		int x2 = sc.getX();
@@ -63,26 +79,31 @@ public class SquareCoordinate implements Coordinate, SquaredShapeCoordinate
 			distance = Math.max((x2 - x), (y2 - y));
 		}
 		
-		// TODO Auto-generated method stub
 		return distance;
 	}
 	
+	/*
+	 * @see escape.board.coordinate.SquaredShapeCoordinate#getID()
+	 */
+	@Override
 	public CoordinateID getID()
 	{
 		return CoordinateID.SQUARE;
 	}
 	
-	/**
-	 * @return the x
+	/*
+	 * @see escape.board.coordinate.SquaredShapeCoordinate#getX()
 	 */
+	@Override
 	public int getX()
 	{
 		return x;
 	}
 
-	/**
-	 * @return the y
+	/*
+	 * @see escape.board.coordinate.SquaredShapeCoordinate#getY()
 	 */
+	@Override
 	public int getY()
 	{
 		return y;

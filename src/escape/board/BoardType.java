@@ -13,11 +13,11 @@
 package escape.board;
 
 /**
- * Description
+ * An enum for the board types that are used in the escape game
  * @version Apr 12, 2020
  */
 public enum BoardType
 {
-	SQUARE, HEX;
+	SQUARE, HEX, ORTHOSQUARE;
 }
  

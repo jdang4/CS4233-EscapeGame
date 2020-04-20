@@ -47,8 +47,7 @@ class BoardTest
 		Board b = bb.makeBoard();
 		assertNotNull(b);
 		
-		// NOTE: my design treated an OrthoSquare board as just a Square Board
-		assertTrue(((SquareBoard)b).getBoardType().equals(BoardType.SQUARE));
+		assertTrue(((OrthoSquareBoard)b).getBoardType().equals(BoardType.ORTHOSQUARE));
 	}
 	
 	@Test
@@ -104,10 +103,9 @@ class BoardTest
 
 	}
 	
-	// tests for getting incorrect coordinates
 	@ParameterizedTest
-	@MethodSource("wrongCoordinatesProvider")
-	void attemptingToGetPieceAtInvalidCoordinate(String fileName, Coordinate coord) throws Exception
+	@MethodSource("wrongCoordinateTypeProvider")
+	void attemptingToGetPieceAtInvalidCoordinateType(String fileName, Coordinate coord) throws Exception
 	{
 		BoardBuilder bb = new BoardBuilder(new File(fileName));
 		Board b = bb.makeBoard();
@@ -118,7 +116,7 @@ class BoardTest
 		);
 	}
 
-	static Stream<Arguments> wrongCoordinatesProvider()
+	static Stream<Arguments> wrongCoordinateTypeProvider()
 	{
 		return Stream.of(
 				Arguments.of(
@@ -211,6 +209,7 @@ class BoardTest
 	static Stream<Arguments> errorCoordinatesProvider()
 	{
 		return Stream.of(
+				// square board
 				Arguments.of(
 						"config/board/BoardConfig-square.xml", SquareCoordinate.makeCoordinate(0, 0)),
 				Arguments.of(
@@ -221,6 +220,8 @@ class BoardTest
 						"config/board/BoardConfig-square.xml", OrthoSquareCoordinate.makeCoordinate(3, 3)),
 				Arguments.of(
 						"config/board/BoardConfig-square.xml", HexCoordinate.makeCoordinate(3, 3)),
+				
+				// orthosquare board
 				Arguments.of(
 						"config/board/BoardConfig-ortho.xml", OrthoSquareCoordinate.makeCoordinate(0, 2)),
 				Arguments.of(
@@ -229,6 +230,8 @@ class BoardTest
 						"config/board/BoardConfig-ortho.xml", SquareCoordinate.makeCoordinate(3, 3)),
 				Arguments.of(
 						"config/board/BoardConfig-ortho.xml", HexCoordinate.makeCoordinate(3, 3)),
+				
+				// hex board
 				Arguments.of(
 						"config/board/BoardConfig-hex.xml", HexCoordinate.makeCoordinate(3, 5)),
 				Arguments.of(

@@ -21,5 +21,12 @@ import escape.util.LocationInitializer;
  */
 public interface InitializeBoard
 {
+	/**
+	 * This method is called to initialize the correct board
+	 * @param b
+	 * 			the board to initialize
+	 * @param initializers
+	 * 			the setup information that is used to initialize the board
+	 */
 	public void initializeBoard(Board b, LocationInitializer... initializers);
 }

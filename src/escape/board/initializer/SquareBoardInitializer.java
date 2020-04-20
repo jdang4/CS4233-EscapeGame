@@ -19,11 +19,15 @@ import escape.piece.EscapePiece;
 import escape.util.LocationInitializer;
 
 /**
- * Description
+ * This class provides the implementations to initialize a square board 
+ * with Square Coordinates
  * @version Apr 14, 2020
  */
 public class SquareBoardInitializer implements InitializeBoard
 {
+	/*
+	 * @see escape.board.initializer.InitializeBoard#initializeBoard(escape.board.Board, escape.util.LocationInitializer[])
+	 */
 	@Override
 	public void initializeBoard(Board board, LocationInitializer... initializers)
 	{  
@@ -32,12 +36,11 @@ public class SquareBoardInitializer implements InitializeBoard
 		 
 		for (LocationInitializer li : initializers) {
 			SquareCoordinate c = SquareCoordinate.makeCoordinate(li.x, li.y);
-			// i believe this means if it is CLEAR 
+ 
 			if (li.pieceName != null) {
 				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
 			}
 			
-			// this is for setting a location type on the board (either EXIT or BLOCK)
 			if (li.locationType != null && li.locationType != CLEAR) {
 				b.setLocationType(c, li.locationType);
 			}

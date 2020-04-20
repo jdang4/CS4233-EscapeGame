@@ -43,6 +43,12 @@ public class BoardBuilder
 
 	}
 	
+	/**
+	 * This method is responsible for the creation of the board and initializing it
+	 * based on the given setup file
+	 * 
+	 * @return a board that is initialized
+	 */
 	public Board makeBoard()
 	{
 		Board board = null;
@@ -56,7 +62,16 @@ public class BoardBuilder
 		
 	}
 	
-	 
+	/** 
+	 * This method is called when trying to initialize the board. It determines the kind of 
+	 * board to create by looking at the provided coordinate id to intialize the proper board
+	 * 
+	 * @param board 
+	 * 			the one to be initialized
+	 * @param initializers
+	 * 			the information that is used to initialized the board
+	 * @return the initialized board
+	 */
 	private Board initializeBoard(Board board, LocationInitializer... initializers)
 	{
 		InitializeBoard initBoard = null;
@@ -76,18 +91,18 @@ public class BoardBuilder
 			{
 				throw new EscapeException("Cannot make an infinte square board");
 			}
-
-			board = new SquareBoard(bi.getxMax(), bi.getyMax());
 			
 			// initializing a square board with orthosquare coordinates
 			if (bi.getCoordinateId().equals(CoordinateID.ORTHOSQUARE))
 			{
+				board = new OrthoSquareBoard(bi.getxMax(), bi.getyMax());
 				initBoard = new OrthoSquareBoardInitializer();
 			} 
 			
 			// initializing a square board with square coordinates
 			else
 			{
+				board = new SquareBoard(bi.getxMax(), bi.getyMax());
 				initBoard = new SquareBoardInitializer();
 			}
 		} 

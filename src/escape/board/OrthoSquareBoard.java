@@ -3,12 +3,13 @@
  * The course was taken at Worcester Polytechnic Institute.
  *
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-2.0/
+ * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Copyright ©2016-2020 Gary F. Pollice
+ * Copyright ©2016 Gary F. Pollice
  *******************************************************************************/
+
 package escape.board;
 
 import java.util.*;
@@ -17,32 +18,29 @@ import escape.exception.EscapeException;
 import escape.piece.EscapePiece;
 
 /**
- * An example of how a Board might be implemented. This board has
- * square coordinates and finite bounds, represented by xMax and yMax.
- * All methods required by the Board interface have been implemented. Students
- * would naturally add methods based upon theire design.
- * @version Apr 2, 2020
+ * Description
+ * @version Apr 19, 2020
  */
-public class SquareBoard extends GenericBoard implements Board<Coordinate>
+public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
 {
-	Map<SquareCoordinate, LocationType> squares;
-	Map<SquareCoordinate, EscapePiece> pieces;
+	Map<OrthoSquareCoordinate, LocationType> orthosquares;
+	Map<OrthoSquareCoordinate, EscapePiece> pieces;
 	
-	public SquareBoard(int xMax, int yMax)
+	public OrthoSquareBoard(int xMax, int yMax)
 	{
 		super(xMax, yMax);
-		pieces = new HashMap<SquareCoordinate, EscapePiece>();
-		squares = new HashMap<SquareCoordinate, LocationType>();
-		type = BoardType.SQUARE;
-	} 
-	  
+		pieces = new HashMap<OrthoSquareCoordinate, EscapePiece>();
+		orthosquares = new HashMap<OrthoSquareCoordinate, LocationType>();
+		type = BoardType.ORTHOSQUARE;
+	}
+	
 	/*
 	 * @see escape.board.GenericBoard#sameCoordinate(escape.board.coordinate.Coordinate)
 	 */
 	@Override
 	protected boolean sameCoordinate(Coordinate c)
 	{
-		if (c.getClass().equals(SquareCoordinate.class))
+		if (c.getClass().equals(OrthoSquareCoordinate.class))
 		{
 			return true; 
 		}
@@ -59,7 +57,7 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 	 * @return whether the coordinate is within the board:
 	 * 			true -> in the board, false -> not in the board
 	 */
-	private boolean insideBoard(SquareCoordinate coord)
+	private boolean insideBoard(OrthoSquareCoordinate coord)
 	{
 		if (coord.getX() > 0 && coord.getX() <= getXMax())
 		{
@@ -71,14 +69,14 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 		
 		return false;
 	}
-	 
+	
 	/*
 	 * @see escape.board.Board#getPieceAt(escape.board.coordinate.Coordinate)
 	 */
 	@Override
 	public EscapePiece getPieceAt(Coordinate coord)
 	{
-		if (!sameCoordinate(coord))
+		if (!sameCoordinate(coord)) 
 		{
 			throw new EscapeException("Invalid Coordinate Type");
 		}
@@ -91,7 +89,7 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 		// no pieces at coordinate
 		return null;
 	}
-
+	
 	/*
 	 * @see escape.board.Board#putPieceAt(escape.piece.EscapePiece, escape.board.coordinate.Coordinate)
 	 */
@@ -106,24 +104,23 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 			throw new EscapeException("Invalid Coordinate Type");
 		}
 		
-		SquareCoordinate sc = (SquareCoordinate) coord;
-		
+		OrthoSquareCoordinate osc = (OrthoSquareCoordinate) coord;
 		// putting a null where an existing piece is at
-		if (p == null && pieces.containsKey(sc))
+		if (p == null && pieces.containsKey(osc))
 		{
-			pieces.remove(sc);
+			pieces.remove(osc);
 			return;
 		}
 
 		// handling the special cases of the coordinate's location type
-		if (getLocationType(sc) != null)
+		if (getLocationType(osc) != null)
 		{
-			if (getLocationType(sc).equals(EXIT))
+			if (getLocationType(osc).equals(EXIT))
 			{ 
 				return;
 			}
 
-			else if (getLocationType(sc).equals(BLOCK))
+			else if (getLocationType(osc).equals(BLOCK))
 			{
 				throw new EscapeException("Cannot put piece on a Block");
 			}
@@ -131,9 +128,9 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 
 		// lastly check to see if coordinate is within the board
 		// before putting it in the board
-		if (insideBoard(sc))
+		if (insideBoard(osc))
 		{
-			pieces.put(sc, p);
+			pieces.put(osc, p);
 			return;
 		}
 		
@@ -149,11 +146,11 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 	 * @param lt
 	 * 			the location type to add to the board
 	 */
-	public void setLocationType(SquareCoordinate c, LocationType lt)
+	public void setLocationType(OrthoSquareCoordinate c, LocationType lt)
 	{
 		if (insideBoard(c))
 		{
-			squares.put(c, lt);
+			orthosquares.put(c, lt);
 		}
 		
 		else
@@ -171,11 +168,11 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 	 * 			the coordinate to get the location type
 	 * @return the locationType if it exists, else null
 	 */
-	private LocationType getLocationType(SquareCoordinate c)
+	private LocationType getLocationType(OrthoSquareCoordinate c)
 	{	
-		if (squares.containsKey(c))
+		if (orthosquares.containsKey(c))
 		{
-			return squares.get(c);
+			return orthosquares.get(c);
 		}
 		
 		return null;
