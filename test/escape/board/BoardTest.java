@@ -79,7 +79,7 @@ class BoardTest
 			}
 		);
 	}
-	
+
 	@ParameterizedTest
 	@MethodSource("nullCoordinatesProvider")
 	void gettingNull(String fileName, Coordinate coord) throws Exception

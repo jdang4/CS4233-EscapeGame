@@ -147,6 +147,31 @@ class CoordinateTest
 				);
     }
 	
+	@ParameterizedTest
+    @MethodSource("orthosquareDistanceTestProvider")
+    void testingOrthoSquareDistanceTo(List<OrthoSquareCoordinate> initializers, int expected)
+    {
+    	OrthoSquareCoordinate from = initializers.get(0);
+    	OrthoSquareCoordinate to = initializers.get(1);
+    	
+    	assertEquals(expected, from.distanceTo(to));
+    }
+    
+    static Stream<Arguments> orthosquareDistanceTestProvider()
+    {
+		CoordinateID id = CoordinateID.ORTHOSQUARE;
+		return Stream.of(
+				Arguments.of(
+						makeInitializers(id, 1, 2, 3, 5), 5),
+				Arguments.of(
+						makeInitializers(id, 1, 1, 2, 2), 2),
+				Arguments.of(
+						makeInitializers(id, 1, 1, 8, 8), 14),
+				Arguments.of(
+						makeInitializers(id, 5, 5, 3, 1), 6)
+				);
+    }
+	
     @ParameterizedTest
     @MethodSource("hexDistanceTestProvider")
     void testingHexDistanceTo(List<HexCoordinate> initializers, int expected)
@@ -171,31 +196,6 @@ class CoordinateTest
 						makeInitializers(id, 0, 2, -2, 0), 4),
 				Arguments.of(
 						makeInitializers(id, -1, 2, 3, 0), 4)
-				);
-    }
-	
-    @ParameterizedTest
-    @MethodSource("orthosquareDistanceTestProvider")
-    void testingOrthoSquareDistanceTo(List<OrthoSquareCoordinate> initializers, int expected)
-    {
-    	OrthoSquareCoordinate from = initializers.get(0);
-    	OrthoSquareCoordinate to = initializers.get(1);
-    	
-    	assertEquals(expected, from.distanceTo(to));
-    }
-    
-    static Stream<Arguments> orthosquareDistanceTestProvider()
-    {
-		CoordinateID id = CoordinateID.ORTHOSQUARE;
-		return Stream.of(
-				Arguments.of(
-						makeInitializers(id, 1, 2, 3, 5), 5),
-				Arguments.of(
-						makeInitializers(id, 1, 1, 2, 2), 2),
-				Arguments.of(
-						makeInitializers(id, 1, 1, 8, 8), 14),
-				Arguments.of(
-						makeInitializers(id, 5, 5, 3, 1), 6)
 				);
     }
     

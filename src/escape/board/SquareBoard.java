@@ -98,6 +98,7 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 	@Override
 	public void putPieceAt(EscapePiece p, Coordinate coord)
 	{
+		LocationType CLEAR = LocationType.CLEAR;
 		LocationType BLOCK = LocationType.BLOCK;
 		LocationType EXIT = LocationType.EXIT;
 		
@@ -116,7 +117,7 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 		}
 
 		// handling the special cases of the coordinate's location type
-		if (getLocationType(sc) != null)
+		if (!getLocationType(sc).equals(CLEAR))
 		{
 			if (getLocationType(sc).equals(EXIT))
 			{ 
@@ -173,11 +174,14 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 	 */
 	private LocationType getLocationType(SquareCoordinate c)
 	{	
-		if (squares.containsKey(c))
+		if (squares.get(c) == null) 
 		{
-			return squares.get(c);
+			return LocationType.CLEAR;
 		}
 		
-		return null;
+		else
+		{
+			return squares.get(c);
+		} 
 	}
 }

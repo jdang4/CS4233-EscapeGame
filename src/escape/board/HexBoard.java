@@ -150,6 +150,7 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 	@Override
 	public void putPieceAt(EscapePiece p, Coordinate coord)
 	{
+		LocationType CLEAR = LocationType.CLEAR;
 		LocationType BLOCK = LocationType.BLOCK;
 		LocationType EXIT = LocationType.EXIT;
 		
@@ -166,7 +167,7 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		}
 		
 		// handling the special cases of the coordinate's location type
-		if (getLocationType(hc) != null)
+		if (!getLocationType(hc).equals(CLEAR))
 		{
 			if (getLocationType(hc).equals(EXIT))
 			{ 
@@ -218,12 +219,15 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 	 */
 	public LocationType getLocationType(HexCoordinate c)
 	{
-		if (hexes.containsKey(c))
+		if (hexes.get(c) == null) 
 		{
-			return hexes.get(c);
+			return LocationType.CLEAR;
 		}
 		
-		return null;
+		else
+		{
+			return hexes.get(c);
+		} 
 	}
 
 }

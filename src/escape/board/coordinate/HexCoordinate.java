@@ -51,7 +51,6 @@ public class HexCoordinate implements Coordinate
 	 * Title: Manhattan Distance between tiles in a hexagonal grid
 	 * Author: Glorfindel and aaz
 	 * Date: 04/12/2020
-	 * Code Version: ??
 	 * Availability: https://stackoverflow.com/questions/5084801/manhattan-distance-between-tiles-in-a-hexagonal-grid
 	 */
 	@Override

@@ -96,6 +96,7 @@ public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
 	@Override
 	public void putPieceAt(EscapePiece p, Coordinate coord)
 	{
+		LocationType CLEAR = LocationType.CLEAR;
 		LocationType BLOCK = LocationType.BLOCK;
 		LocationType EXIT = LocationType.EXIT;
 		
@@ -113,7 +114,7 @@ public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
 		}
 
 		// handling the special cases of the coordinate's location type
-		if (getLocationType(osc) != null)
+		if (!getLocationType(osc).equals(CLEAR))
 		{
 			if (getLocationType(osc).equals(EXIT))
 			{ 
@@ -170,11 +171,14 @@ public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
 	 */
 	private LocationType getLocationType(OrthoSquareCoordinate c)
 	{	
-		if (orthosquares.containsKey(c))
+		if (orthosquares.get(c) == null) 
 		{
-			return orthosquares.get(c);
+			return LocationType.CLEAR;
 		}
 		
-		return null;
+		else
+		{
+			return orthosquares.get(c);
+		} 
 	}
 }

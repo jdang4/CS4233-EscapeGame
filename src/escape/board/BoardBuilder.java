@@ -82,7 +82,7 @@ public class BoardBuilder
 			board = new HexBoard(bi.getxMax(), bi.getyMax());
 			initBoard = new HexBoardInitializer();
 		}
-		
+		 
 		// initializing a square board
 		else
 		{
@@ -112,6 +112,6 @@ public class BoardBuilder
 		
 		// returns the initialized board
 		return board;	
-	}
+	} 
 	
 }
