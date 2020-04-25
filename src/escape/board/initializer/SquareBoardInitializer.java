@@ -33,7 +33,12 @@ public class SquareBoardInitializer implements InitializeBoard
 	{  
 		SquareBoard b = (SquareBoard) board;
 		b.setCoordinateID(CoordinateID.SQUARE);
-		 
+		
+		if (initializers == null)
+		{
+			return;
+		}
+		
 		for (LocationInitializer li : initializers) {
 			SquareCoordinate c = SquareCoordinate.makeCoordinate(li.x, li.y);
  

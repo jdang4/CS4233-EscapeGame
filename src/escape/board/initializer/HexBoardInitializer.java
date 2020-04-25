@@ -33,6 +33,11 @@ public class HexBoardInitializer implements InitializeBoard
 		HexBoard b = (HexBoard) board;
 		b.setCoordinateID(CoordinateID.HEX);
 		
+		if (initializers == null)
+		{
+			return;
+		}
+		
 		for (LocationInitializer li : initializers) {
 			HexCoordinate c = HexCoordinate.makeCoordinate(li.x, li.y);
 			

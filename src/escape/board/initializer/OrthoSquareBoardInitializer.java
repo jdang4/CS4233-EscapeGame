@@ -33,7 +33,12 @@ public class OrthoSquareBoardInitializer implements InitializeBoard
 	{
 		OrthoSquareBoard b = (OrthoSquareBoard) board;
 		b.setCoordinateID(CoordinateID.ORTHOSQUARE);
-		 
+		
+		if (initializers == null)
+		{
+			return;
+		}
+		
 		for (LocationInitializer li : initializers) {
 			OrthoSquareCoordinate c = OrthoSquareCoordinate.makeCoordinate(li.x, li.y);
 			
