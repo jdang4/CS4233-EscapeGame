@@ -21,16 +21,13 @@ import escape.piece.EscapePiece;
  * The implementation of a Hex Board
  * @version Apr 12, 2020
  */
-public class HexBoard extends GenericBoard implements Board<Coordinate>
-{
-	Map<HexCoordinate, LocationType> hexes;
-	Map<HexCoordinate, EscapePiece> pieces;
-	 
+public class HexBoard extends GenericBoard<HexCoordinate> implements Board<Coordinate>
+{	 
 	public HexBoard(int xMax, int yMax)
 	{
 		super(xMax, yMax);
-		pieces = new HashMap<HexCoordinate, EscapePiece>();
-		hexes = new HashMap<HexCoordinate, LocationType>();
+		this.pieces = new HashMap<HexCoordinate, EscapePiece>();
+		this.spaces = new HashMap<HexCoordinate, LocationType>();
 		type = BoardType.HEX;
 	}
 	
@@ -78,7 +75,8 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 	 * @return whether the coordinate is within the board:
 	 * 			true -> in the board, false -> not in the board
 	 */
-	private boolean insideBoard(HexCoordinate coord)
+	@Override
+	protected boolean insideBoard(HexCoordinate coord)
 	{
 		boolean validXBoundary = inXBoundary(coord);
 		boolean validYBoundary = inYBoundary(coord);
@@ -188,46 +186,9 @@ public class HexBoard extends GenericBoard implements Board<Coordinate>
 		throw new EscapeException("Unable to place piece on board");
 	}
 	
-	/**
-	 * This method is called to set a location type on the hex board
-	 * 
-	 * @param c 
-	 * 			the coordinate to add the location type to on the board
-	 * @param lt
-	 * 			the location type to add to the board
-	 */
-	public void setLocationType(HexCoordinate c, LocationType lt)
-	{
-		if (insideBoard(c))
-		{
-			hexes.put(c, lt);
-		}
-		
-		else
-		{ 
-			throw new EscapeException("Coordinate not in board");
-		}
-	}
 	
-	/**
-	 * This method is called to get the location type at a specific coordinate
-	 * on the board
-	 * 
-	 * @param c
-	 * 			the coordinate to get the location type
-	 * @return the locationType if it exists, else null
-	 */
-	public LocationType getLocationType(HexCoordinate c)
-	{
-		if (hexes.get(c) == null) 
-		{
-			return LocationType.CLEAR;
-		}
-		
-		else
-		{
-			return hexes.get(c);
-		} 
-	}
+	
+	
+
 
 }

@@ -12,15 +12,20 @@
 
 package escape.board;
 
+import java.util.*;
 import escape.board.coordinate.*;
+import escape.exception.EscapeException;
+import escape.piece.EscapePiece;
 
 /**
  * This is an abstract class that represents a generic board that 
  * is used in the escape game
  * @version Apr 16, 2020
  */
-public abstract class GenericBoard implements Board<Coordinate>
+public abstract class GenericBoard<C extends Coordinate> implements Board<Coordinate>
 {
+	protected Map<C, LocationType> spaces;
+	protected Map<C, EscapePiece> pieces;
 	protected final int xMax, yMax;
 	protected BoardType type;
 	protected CoordinateID id;
@@ -37,6 +42,7 @@ public abstract class GenericBoard implements Board<Coordinate>
 	{
 		this.xMax = xMax;
 		this.yMax = yMax;
+		
 	} 
 	
 	/**
@@ -76,6 +82,8 @@ public abstract class GenericBoard implements Board<Coordinate>
 	 */
 	protected abstract boolean sameCoordinate(Coordinate c);
 	
+	protected abstract boolean insideBoard(C coord);
+	
 	/**
 	 * This method is used to get the xMax value
 	 * 
@@ -94,5 +102,47 @@ public abstract class GenericBoard implements Board<Coordinate>
 	public int getYMax()
 	{
 		return yMax;
+	}
+	
+	/**
+	 * This method is called to set a location type on the hex board
+	 * 
+	 * @param c 
+	 * 			the coordinate to add the location type to on the board
+	 * @param lt
+	 * 			the location type to add to the board
+	 */
+	public void setLocationType(C c, LocationType lt)
+	{
+		if (insideBoard(c))
+		{
+			spaces.put(c, lt);
+		}
+		
+		else
+		{ 
+			throw new EscapeException("Coordinate not in board");
+		}
+	}
+	
+	/**
+	 * This method is called to get the location type at a specific coordinate
+	 * on the board
+	 * 
+	 * @param c
+	 * 			the coordinate to get the location type
+	 * @return the locationType if it exists, else null
+	 */
+	public LocationType getLocationType(C c)
+	{
+		if (spaces.get(c) == null) 
+		{
+			return LocationType.CLEAR;
+		}
+		
+		else
+		{
+			return spaces.get(c);
+		} 
 	}
 }

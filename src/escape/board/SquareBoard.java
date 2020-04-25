@@ -23,16 +23,13 @@ import escape.piece.EscapePiece;
  * would naturally add methods based upon theire design.
  * @version Apr 2, 2020
  */
-public class SquareBoard extends GenericBoard implements Board<Coordinate>
-{
-	Map<SquareCoordinate, LocationType> squares;
-	Map<SquareCoordinate, EscapePiece> pieces;
-	
+public class SquareBoard extends GenericBoard<SquareCoordinate> implements Board<Coordinate>
+{	
 	public SquareBoard(int xMax, int yMax)
 	{
 		super(xMax, yMax);
-		pieces = new HashMap<SquareCoordinate, EscapePiece>();
-		squares = new HashMap<SquareCoordinate, LocationType>();
+		this.pieces = new HashMap<SquareCoordinate, EscapePiece>();
+		this.spaces = new HashMap<SquareCoordinate, LocationType>();
 		type = BoardType.SQUARE;
 	} 
 	  
@@ -59,7 +56,8 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 	 * @return whether the coordinate is within the board:
 	 * 			true -> in the board, false -> not in the board
 	 */
-	private boolean insideBoard(SquareCoordinate coord)
+	@Override
+	protected boolean insideBoard(SquareCoordinate coord)
 	{
 		if (coord.getX() > 0 && coord.getX() <= getXMax())
 		{
@@ -140,48 +138,5 @@ public class SquareBoard extends GenericBoard implements Board<Coordinate>
 		
 		throw new EscapeException("Unable to place piece on board");
 		
-	}
-	
-	/**
-	 * This method is called to set a location type on the square board
-	 * 
-	 * @param c 
-	 * 			the coordinate to add the location type to on the board
-	 * @param lt
-	 * 			the location type to add to the board
-	 */
-	public void setLocationType(SquareCoordinate c, LocationType lt)
-	{
-		if (insideBoard(c))
-		{
-			squares.put(c, lt);
-		}
-		
-		else
-		{
-			throw new EscapeException("Given invalid coordinate");
-		}
-
-	}
-	
-	/**
-	 * This method is called to get the location type at a specific coordinate
-	 * on the board
-	 * 
-	 * @param c
-	 * 			the coordinate to get the location type
-	 * @return the locationType if it exists, else null
-	 */
-	private LocationType getLocationType(SquareCoordinate c)
-	{	
-		if (squares.get(c) == null) 
-		{
-			return LocationType.CLEAR;
-		}
-		
-		else
-		{
-			return squares.get(c);
-		} 
 	}
 }

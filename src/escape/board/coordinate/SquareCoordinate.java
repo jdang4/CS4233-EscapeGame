@@ -76,7 +76,7 @@ public class SquareCoordinate implements Coordinate
 		
 		else
 		{
-			distance = Math.max((x2 - x), (y2 - y));
+			distance = Math.max(Math.abs(x2 - x), Math.abs(y2 - y));
 		}
 		
 		return distance;

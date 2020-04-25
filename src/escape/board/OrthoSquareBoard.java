@@ -21,16 +21,14 @@ import escape.piece.EscapePiece;
  * Description
  * @version Apr 19, 2020
  */
-public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
+public class OrthoSquareBoard extends GenericBoard<OrthoSquareCoordinate> implements Board<Coordinate>
 {
-	Map<OrthoSquareCoordinate, LocationType> orthosquares;
-	Map<OrthoSquareCoordinate, EscapePiece> pieces;
 	
 	public OrthoSquareBoard(int xMax, int yMax)
 	{
 		super(xMax, yMax);
-		pieces = new HashMap<OrthoSquareCoordinate, EscapePiece>();
-		orthosquares = new HashMap<OrthoSquareCoordinate, LocationType>();
+		this.pieces = new HashMap<OrthoSquareCoordinate, EscapePiece>();
+		this.spaces = new HashMap<OrthoSquareCoordinate, LocationType>();
 		type = BoardType.ORTHOSQUARE;
 	}
 	
@@ -57,7 +55,8 @@ public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
 	 * @return whether the coordinate is within the board:
 	 * 			true -> in the board, false -> not in the board
 	 */
-	private boolean insideBoard(OrthoSquareCoordinate coord)
+	@Override
+	protected boolean insideBoard(OrthoSquareCoordinate coord)
 	{
 		if (coord.getX() > 0 && coord.getX() <= getXMax())
 		{
@@ -138,47 +137,4 @@ public class OrthoSquareBoard extends GenericBoard implements Board<Coordinate>
 		throw new EscapeException("Unable to place piece on board");
 		
 	}
-	
-	/**
-	 * This method is called to set a location type on the square board
-	 * 
-	 * @param c 
-	 * 			the coordinate to add the location type to on the board
-	 * @param lt
-	 * 			the location type to add to the board
-	 */
-	public void setLocationType(OrthoSquareCoordinate c, LocationType lt)
-	{
-		if (insideBoard(c))
-		{
-			orthosquares.put(c, lt);
-		}
-		
-		else
-		{
-			throw new EscapeException("Given invalid coordinate");
-		}
-
-	}
-	
-	/**
-	 * This method is called to get the location type at a specific coordinate
-	 * on the board
-	 * 
-	 * @param c
-	 * 			the coordinate to get the location type
-	 * @return the locationType if it exists, else null
-	 */
-	private LocationType getLocationType(OrthoSquareCoordinate c)
-	{	
-		if (orthosquares.get(c) == null) 
-		{
-			return LocationType.CLEAR;
-		}
-		
-		else
-		{
-			return orthosquares.get(c);
-		} 
-	}
-}
+}	
