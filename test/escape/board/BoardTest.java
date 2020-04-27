@@ -20,9 +20,13 @@ import org.junit.Rule;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
+import escape.*;
 import escape.board.coordinate.*;
 import escape.exception.EscapeException;
 import escape.piece.*;
+import static escape.piece.EscapePiece.*;
+import static escape.piece.Player.*;
+import static escape.piece.PieceName.*;
 /**
  * Description
  * @version Apr 2, 2020
@@ -33,7 +37,8 @@ class BoardTest
 	@Test
 	void buildSquareBoard() throws Exception
 	{
-		BoardBuilder bb = new BoardBuilder(new File("config/board/BoardConfig-square.xml"));
+		EscapeGameBuilder bb = new EscapeGameBuilder(new File("config/board/BoardConfig-square.xml"));
+		EscapeGameManager emg = bb.makeGameManager();
 		Board b = bb.makeBoard();
 		assertNotNull(b);
 		
@@ -68,6 +73,25 @@ class BoardTest
 			bb.makeBoard();
 			}
 		);
+	}
+	
+	@Test
+	void orthoSquareBoard() throws Exception
+	{
+		Board board = null;
+	    BoardBuilder bb = new BoardBuilder(
+	        new File("config/board/OrthoSquareBoard.xml"));
+        board = bb.makeBoard();
+        assertNotNull(board);
+        // Now I will do some tests on this board and its contents.
+        OrthoSquareCoordinate sc = OrthoSquareCoordinate.makeCoordinate(5, 5);
+        EscapePiece ep = makePiece(PLAYER1, SNAIL); 
+        assertNull(board.getPieceAt(sc));
+        board.putPieceAt(ep, sc);
+        EscapePiece ep1 = board.getPieceAt(sc);
+        assertNotNull(ep1);
+        assertEquals(ep.getName(), ep1.getName());
+        assertEquals(ep.getPlayer(), ep1.getPlayer());
 	}
 	
 	@Test

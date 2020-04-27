@@ -12,6 +12,8 @@
 
 package escape.piece;
 
+import escape.board.coordinate.HexCoordinate;
+
 /**
  * This is a class for Pieces.
  * 
@@ -62,5 +64,19 @@ public class EscapePiece
 	public Player getPlayer()
 	{
 		return player;
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof EscapePiece)) {
+			return false;
+		}
+		
+		EscapePiece other = (EscapePiece) obj;
+		return player.equals(other.player) && name.equals(other.name);
 	}
 }
