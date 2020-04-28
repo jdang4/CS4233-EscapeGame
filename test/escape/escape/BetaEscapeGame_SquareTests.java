@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.File;
 import org.junit.jupiter.api.*;
 import escape.*;
-import escape.board.coordinate.Coordinate;
+import escape.board.coordinate.*;
 import escape.exception.EscapeException;
 import escape.piece.*;
 
@@ -38,19 +38,53 @@ class BetaEscapeGame_SquareTests
 			}
 		);
 	}
+	
+	@Test
+	void testingInvalidGameConfig2() throws Exception
+	{
+		EscapeGameBuilder egb 
+		= new EscapeGameBuilder(new File("config/SampleEscapeGame2.xml"));
+		
+		Assertions.assertThrows(EscapeException.class, () -> {
+			egb.makeGameManager();
+			}
+		);
+		
+	}
+	
 	@Test
 	void testingGetPieces() throws Exception
 	{
 		EscapeGameBuilder egb 
 		= new EscapeGameBuilder(new File("config/SampleEscapeGameWithPieces.xml"));
 		EscapeGameManager emg = egb.makeGameManager();
-
+		
+		EscapeGameController c = (EscapeGameController) emg;
+		
+		for (PieceName p : c.getPieceTypes().keySet())
+		{
+			System.out.println(c.getPieceTypes().get(p).getIdentity());
+		}
+		
 		EscapePiece test = new EscapePiece(Player.PLAYER1, PieceName.FROG);
 
 		Coordinate testCoordinate = emg.makeCoordinate(15, 15);
 
 		assertTrue(test.equals(emg.getPieceAt(testCoordinate)));
-
 	}
+	
+	@Test
+	void gettingNull() throws Exception
+	{
+		EscapeGameBuilder egb = new EscapeGameBuilder(new File("config/SampleEscapeGameWithPieces.xml"));
+		EscapeGameManager emg = egb.makeGameManager();
+		
+		Coordinate testCoordinate = emg.makeCoordinate(3, 19);
+		
+		assertNull(emg.getPieceAt(testCoordinate));
+		
+	}
+	
+	
 
 }

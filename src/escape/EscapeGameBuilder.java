@@ -13,12 +13,13 @@
 package escape;
 
 import java.io.*;
+import java.util.*;
 import javax.xml.bind.*;
 import escape.board.*;
 import escape.board.coordinate.CoordinateID;
 import escape.board.initializer.*;
 import escape.exception.EscapeException;
-import escape.piece.EscapePiece;
+import escape.piece.*;
 import escape.util.*;
 
 /**
@@ -54,99 +55,44 @@ public class EscapeGameBuilder
      */
     public EscapeGameManager makeGameManager()
     {
-    	/*
-    	 * TODO
-    	 * (2) I need to be able to add information to the pieces (under PiceType field in XML) [Look at PieceTypeInitializer]
-    	 * 	- Need to add some functions to store information about the piece 
-    	 * 		- probably use some prviate variables and some getter functions
-    	 */
-        // To be implemented
     	
     	if (gameInitializer.getCoordinateType() == null || gameInitializer.getPieceTypes() == null)
     	{
     		throw new EscapeException("Detected Invalid Config file");
     	}
     	
-    	
-    	
     	CoordinateID gameCoordinateID = gameInitializer.getCoordinateType();
     	
-    	GenericBoard gameBoard = makeBoard();
+    	BoardBuilder boardBuilder = new BoardBuilder(gameInitializer);
     	
-    	/*
-    	 * TODO
-    	 * - need to do something about the piece types
-    	 */
+    	GenericBoard gameBoard = boardBuilder.makeBoard();
+    	
+    	Map<PieceName, PieceDescriptor> pieceTypes = new HashMap<PieceName, PieceDescriptor>();
+    	
+    	for (PieceTypeInitializer init : gameInitializer.getPieceTypes())
+    	{
+    		PieceDescriptor descriptor = new PieceDescriptor(init);
+    		
+    		if (pieceTypes.containsKey(descriptor.getName()))
+    		{
+    			PieceDescriptor storedDescriptor = pieceTypes.get(descriptor.getName());
+    			
+    			if (!storedDescriptor.equals(descriptor))
+    			{
+    				throw new EscapeException("Invalid Config File");
+    			}
+    			
+    			continue;
+    		}
+    		
+    		pieceTypes.put(init.getPieceName(), descriptor);
+    	}
     	
     	EscapeGameController controller = new EscapeGameController(gameBoard, gameCoordinateID);
+    	controller.setPieceTypes(pieceTypes);
     	
     	
         return controller;
     }
     
-    /**
-	 * This method is responsible for the creation of the board and initializing it
-	 * based on the given setup file
-	 * 
-	 * @return a board that is initialized
-	 */
-	public GenericBoard makeBoard()
-	{
-		GenericBoard board = null;
-		
-		return initializeBoard(board, gameInitializer.getLocationInitializers());
-		
-	}
-	
-	/** 
-	 * This method is called when trying to initialize the board. It determines the kind of 
-	 * board to create by looking at the provided coordinate id to intialize the proper board
-	 * 
-	 * @param board 
-	 * 			the one to be initialized
-	 * @param initializers
-	 * 			the information that is used to initialized the board
-	 * @return the initialized board
-	 */
-	private GenericBoard initializeBoard(GenericBoard board, LocationInitializer... initializers)
-	{
-		InitializeBoard initBoard = null;
-		
-		// initializing a hex board
-		if (gameInitializer.getCoordinateType().equals(CoordinateID.HEX)) 
-		{
-			board = new HexBoard(gameInitializer.getxMax(), gameInitializer.getyMax());
-			initBoard = new HexBoardInitializer();
-		}
-		 
-		// initializing a square board
-		else
-		{
-			// verify that the setup of the potential square board is finite
-			if (gameInitializer.getxMax() == 0 || gameInitializer.getyMax() == 0)
-			{
-				throw new EscapeException("Cannot make an infinte square board");
-			}
-			
-			// initializing a square board with orthosquare coordinates
-			if (gameInitializer.getCoordinateType().equals(CoordinateID.ORTHOSQUARE))
-			{
-				board = new OrthoSquareBoard(gameInitializer.getxMax(), gameInitializer.getyMax());
-				initBoard = new OrthoSquareBoardInitializer();
-			} 
-			
-			// initializing a square board with square coordinates
-			else
-			{
-				board = new SquareBoard(gameInitializer.getxMax(), gameInitializer.getyMax());
-				initBoard = new SquareBoardInitializer();
-			}
-		} 
-		
-		// initializes the board with the proper configurations
-		initBoard.initializeBoard(board, gameInitializer.getLocationInitializers());
-		
-		// returns the initialized board
-		return board;	
-	}
 }

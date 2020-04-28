@@ -15,6 +15,7 @@ package escape;
 import java.util.Map;
 import escape.board.*;
 import escape.board.coordinate.*;
+import escape.exception.EscapeException;
 import escape.piece.*;
 
 /**
@@ -25,7 +26,7 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 {
 	private final GenericBoard board;
 	private final CoordinateID id;
-	private Map<PieceName, PieceDescriptor> piecetypes;
+	private Map<PieceName, PieceDescriptor> pieceTypes;
 	 
 	public EscapeGameController(GenericBoard board, CoordinateID id) 
 	{
@@ -38,6 +39,15 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		return this.board;
 	}
 	
+	public void setPieceTypes(Map<PieceName, PieceDescriptor> piecetypes)
+	{
+		this.pieceTypes = piecetypes;
+	}
+	
+	public Map<PieceName, PieceDescriptor> getPieceTypes()
+	{
+		return this.pieceTypes;
+	}
 	
 	/*
 	 * @see escape.EscapeGameManager#getPieceAt(escape.board.coordinate.Coordinate)
@@ -45,9 +55,10 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 	@Override
 	public EscapePiece getPieceAt(Coordinate c)
 	{
+		
 		return board.getPieceAt(c);
 	}
-	
+	 
 	/*
 	 * @see escape.EscapeGameManager#makeCoordinate(int, int)
 	 */
@@ -78,6 +89,25 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 	public boolean move(Coordinate from, Coordinate to)
 	{
 		EscapePiece movingPiece = getPieceAt(from);
+		
+		if (!pieceTypes.containsKey(movingPiece.getName()))
+		{
+			throw new EscapeException("Cannot move invalid piece");
+		}
+		
+		/**
+		 * TODO
+		 * (1) extract the piece's pieceType info
+		 * (2) do some error checking based on pieceType info
+		 * 		(2.1) Hex cannot have Orthothogonal or Diagonal
+		 * 		(2.2) OMNI needs distance value
+		 * 		(2.3) FLY and JUMP cannot co-exist ????
+		 * 		(2.4) FLY and DISTANCE cannot co-exist 
+		 */
+		
+		PieceDescriptor movingPieceDescriptor = pieceTypes.get(movingPiece.getName());
+		
+		
 		return false;
 	}
 	

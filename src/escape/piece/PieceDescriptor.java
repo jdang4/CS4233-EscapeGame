@@ -12,6 +12,10 @@
 
 package escape.piece;
 
+import java.util.ArrayList;
+import escape.util.PieceTypeInitializer;
+import escape.util.PieceTypeInitializer.PieceAttribute;
+
 /**
  * Description
  * @version Apr 26, 2020
@@ -19,16 +23,16 @@ package escape.piece;
 public class PieceDescriptor
 {
 	private final MovementPatternID movementPattern;
-	private final PieceAttributeID attributeID;
-	private PieceAttributeType attributeType;
+	private final PieceAttribute attributes[];
 	private final PieceName name;
+	private final String identity;
 	
-	public PieceDescriptor(PieceName name, MovementPatternID pattern, PieceAttributeID attributeID, PieceAttributeType attributeType)
-	{
-		this.name = name;
-		this.movementPattern = pattern;
-		this.attributeID = attributeID;
-		this.attributeType = attributeType;
+	public PieceDescriptor(PieceTypeInitializer init)
+	{ 
+		this.movementPattern = init.getMovementPattern();
+		this.name = init.getPieceName();
+		this.attributes = init.getAttributes();
+		this.identity = init.toString();
 	}
 	
 	public PieceName getName()
@@ -40,15 +44,42 @@ public class PieceDescriptor
 		return this.movementPattern;
 	}
 	
-	public PieceAttributeID getPieceAttributeID()
+	public PieceAttribute[] getPieceAttributes()
 	{
-		return this.attributeID;
+		return this.attributes;
 	}
 	
-	public PieceAttributeType getAttributeType()
+	public String getIdentity()
 	{
-		return this.attributeType;
+		return this.identity;
 	}
 	
+	public ArrayList<PieceAttributeID> getAttributeIDs()
+	{
+		ArrayList<PieceAttributeID> attributeIDs = new ArrayList<>();
+		
+		for (PieceAttribute attribute : attributes)
+		{
+			attributeIDs.add(attribute.getId());
+		}
+		
+		return attributeIDs;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof PieceDescriptor)) {
+			return false;
+		}
+		
+		PieceDescriptor other = (PieceDescriptor) obj;
+		
+		return this.identity.equals(other.getIdentity());
+	}
 	
 }

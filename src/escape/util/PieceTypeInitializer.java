@@ -40,7 +40,7 @@ public class PieceTypeInitializer
         public void setIntValue(int intValue) { this.intValue = intValue; }
         public boolean isBooleanValue() { return booleanValue;  }
         public void setBooleanValue(boolean booleanValue) { this.booleanValue = booleanValue; }
-
+ 
 		/**
 		 * @return the attrType
 		 */
