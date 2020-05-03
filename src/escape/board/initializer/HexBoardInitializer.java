@@ -13,25 +13,31 @@
 package escape.board.initializer;
 
 import static escape.board.LocationType.CLEAR;
+import java.util.Map;
 import escape.board.*;
 import escape.board.coordinate.*;
-import escape.piece.EscapePiece;
+import escape.exception.EscapeException;
+import escape.piece.*;
 import escape.util.LocationInitializer;
 
 /**
  * This class provides the implementations to initialize a hex board
  * @version Apr 14, 2020
  */
-public class HexBoardInitializer implements InitializeBoard
+public class HexBoardInitializer extends InitializeBoard
 {
+	public HexBoardInitializer(GenericBoard b)
+	{
+		super(b);
+	}
+	
 	/*
 	 * @see escape.board.initializer.InitializeBoard#initializeBoard(escape.board.Board, escape.util.LocationInitializer[])
 	 */
 	@Override
-	public void initializeBoard(Board board, LocationInitializer... initializers)
+	public void initializeBoard(Map<PieceName, PieceDescriptor> pieceTypes, LocationInitializer... initializers)
 	{
-		HexBoard b = (HexBoard) board;
-		b.setCoordinateID(CoordinateID.HEX);
+		setBoardType();
 		
 		if (initializers == null)
 		{
@@ -42,7 +48,18 @@ public class HexBoardInitializer implements InitializeBoard
 			HexCoordinate c = HexCoordinate.makeCoordinate(li.x, li.y);
 			
 			if (li.pieceName != null) {
-				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
+				
+				if (!pieceTypes.containsKey(li.pieceName))
+				{
+					throw new EscapeException("Invalid Piece Type");
+					
+				}
+				
+				PieceDescriptor descriptor = pieceTypes.get(li.pieceName);
+				
+				EscapePiece piece = new EscapePiece(li.player, li.pieceName, descriptor);
+				b.putPieceAt(piece, c);
+				
 			}
 			
 			if (li.locationType != null && li.locationType != CLEAR) {

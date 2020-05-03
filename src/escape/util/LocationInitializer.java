@@ -41,14 +41,17 @@ public class LocationInitializer
         this.player = player;
         this.pieceName = pieceName;
     }
-
+    
+    
     /*
      * @see java.lang.Object#toString()
      */
+    
     @Override
     public String toString()
     {
         return "LocationInitializer [x=" + x + ", y=" + y + ", locationType="
             + locationType + ", player=" + player + ", pieceName=" + pieceName + "]";
     }
+    
 }

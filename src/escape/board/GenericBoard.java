@@ -82,7 +82,7 @@ public abstract class GenericBoard<C extends Coordinate> implements Board<Coordi
 	 */
 	protected abstract boolean sameCoordinate(Coordinate c);
 	
-	protected abstract boolean insideBoard(C coord);
+	public abstract boolean insideBoard(C coord);
 	
 	/**
 	 * This method is used to get the xMax value

@@ -32,6 +32,7 @@ public class OrthoSquareBoard extends GenericBoard<OrthoSquareCoordinate> implem
 		type = BoardType.ORTHOSQUARE;
 	}
 	
+	
 	/*
 	 * @see escape.board.GenericBoard#sameCoordinate(escape.board.coordinate.Coordinate)
 	 */
@@ -56,7 +57,7 @@ public class OrthoSquareBoard extends GenericBoard<OrthoSquareCoordinate> implem
 	 * 			true -> in the board, false -> not in the board
 	 */
 	@Override
-	protected boolean insideBoard(OrthoSquareCoordinate coord)
+	public boolean insideBoard(OrthoSquareCoordinate coord)
 	{
 		if (coord.getX() > 0 && coord.getX() <= getXMax())
 		{
@@ -77,7 +78,7 @@ public class OrthoSquareBoard extends GenericBoard<OrthoSquareCoordinate> implem
 	{
 		if (!sameCoordinate(coord)) 
 		{
-			throw new EscapeException("Invalid Coordinate Type");
+			return null;
 		}
 		
 		else if (pieces.containsKey(coord))

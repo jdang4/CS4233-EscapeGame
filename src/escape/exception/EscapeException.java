@@ -36,8 +36,10 @@ public class EscapeException extends RuntimeException
 	 * @param message a meaningful message describing the problem
 	 * @param cause the exception that caused the problem
 	 */
+	/*
 	public EscapeException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
+	*/
 }

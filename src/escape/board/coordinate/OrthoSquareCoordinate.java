@@ -16,14 +16,21 @@ import java.util.Objects;
 import escape.exception.EscapeException;
 
 /**
- * Description
+ * This class is the implementation of the orthosquare coordinate
  * @version Apr 12, 2020
  */
-public class OrthoSquareCoordinate implements Coordinate
+public class OrthoSquareCoordinate implements Coordinate, PathFinderCoordinate
 {
 	private final int x;
 	private final int y;
+	private PathFinderCoordinate parent;
 	
+	/**
+	 * This is the constructor for an orthosquare coordinate object
+	 * 
+	 * @param x - the x value of the orthosquare coordinate object
+	 * @param y - the y value of the orthosquare coordinate object
+	 */
 	private OrthoSquareCoordinate(int x, int y)
 	{
 		this.x = x;
@@ -65,17 +72,37 @@ public class OrthoSquareCoordinate implements Coordinate
 		return (xDistance + yDistance);
 	}
 	
-	/**
-	 * @return the x
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#setParent(escape.board.coordinate.PathFinderCoordinate)
 	 */
+	@Override
+	public void setParent(PathFinderCoordinate c)
+	{
+		this.parent = c;
+	}
+	
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#getParent()
+	 */
+	@Override
+	public PathFinderCoordinate getParent()
+	{
+		return this.parent;
+	}
+	
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#getX()
+	 */
+	@Override
 	public int getX()
 	{
 		return x;
 	}
 
-	/**
-	 * @return the y
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#getY()
 	 */
+	@Override
 	public int getY()
 	{
 		return y;

@@ -13,9 +13,11 @@
 package escape.board.initializer;
 
 import static escape.board.LocationType.CLEAR;
+import java.util.Map;
 import escape.board.*;
 import escape.board.coordinate.*;
-import escape.piece.EscapePiece;
+import escape.exception.EscapeException;
+import escape.piece.*;
 import escape.util.LocationInitializer;
 
 /**
@@ -23,16 +25,20 @@ import escape.util.LocationInitializer;
  * with OrthoSquare Coordinates
  * @version Apr 14, 2020
  */
-public class OrthoSquareBoardInitializer implements InitializeBoard
+public class OrthoSquareBoardInitializer extends InitializeBoard
 { 
+	public OrthoSquareBoardInitializer(GenericBoard b)
+	{
+		super(b);
+	}
+	
 	/*
 	 * @see escape.board.initializer.InitializeBoard#initializeBoard(escape.board.Board, escape.util.LocationInitializer[])
 	 */
 	@Override
-	public void initializeBoard(Board board, LocationInitializer... initializers)
+	public void initializeBoard(Map<PieceName, PieceDescriptor> pieceTypes, LocationInitializer... initializers)
 	{
-		OrthoSquareBoard b = (OrthoSquareBoard) board;
-		b.setCoordinateID(CoordinateID.ORTHOSQUARE);
+		setBoardType();
 		
 		if (initializers == null)
 		{
@@ -44,7 +50,17 @@ public class OrthoSquareBoardInitializer implements InitializeBoard
 			
 			// i believe this means if it is CLEAR 
 			if (li.pieceName != null) {
-				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
+				
+				if (!pieceTypes.containsKey(li.pieceName))
+				{
+					throw new EscapeException("Invalid Piece Type");
+					
+				}
+				
+				PieceDescriptor descriptor = pieceTypes.get(li.pieceName);
+				
+				EscapePiece piece = new EscapePiece(li.player, li.pieceName, descriptor);
+				b.putPieceAt(piece, c);
 			}
 			
 			// this is for setting a location type on the board (either EXIT or BLOCK)

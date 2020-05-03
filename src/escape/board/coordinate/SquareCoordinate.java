@@ -19,11 +19,18 @@ import escape.exception.EscapeException;
  * 
  * @version Mar 27, 2020
  */
-public class SquareCoordinate implements Coordinate
+public class SquareCoordinate implements Coordinate, PathFinderCoordinate
 {
     private final int x;
     private final int y;
+    private PathFinderCoordinate parent;
     
+    /**
+	 * This is the constructor for a square coordinate object
+	 * 
+	 * @param x - the x value of the square coordinate object
+	 * @param y - the y value of the square coordinate object
+	 */
     private SquareCoordinate(int x, int y)
     {
     	this.x = x;
@@ -82,17 +89,37 @@ public class SquareCoordinate implements Coordinate
 		return distance;
 	}
 	
-	/**
-	 * @return the x
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#setParent(escape.board.coordinate.PathFinderCoordinate)
 	 */
+	@Override
+	public void setParent(PathFinderCoordinate c)
+	{
+		this.parent = c;
+	}
+	
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#getParent()
+	 */
+	@Override
+	public PathFinderCoordinate getParent()
+	{
+		return this.parent;
+	}
+	
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#getX()
+	 */
+	@Override
 	public int getX()
 	{
 		return x;
 	}
 
-	/**
-	 * @return the y
+	/*
+	 * @see escape.board.coordinate.PathFinderCoordinate#getY()
 	 */
+	@Override
 	public int getY()
 	{
 		return y;

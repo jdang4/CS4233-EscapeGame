@@ -54,7 +54,7 @@ public class HexBoard extends GenericBoard<HexCoordinate> implements Board<Coord
 		// verify if the coordinate has the correct id
 		if (!sameCoordinate(coord))
 		{
-			throw new EscapeException("Invalid Coordinate Type");
+			return null;
 		} 
 		
 		else if (pieces.containsKey(coord))
@@ -76,7 +76,7 @@ public class HexBoard extends GenericBoard<HexCoordinate> implements Board<Coord
 	 * 			true -> in the board, false -> not in the board
 	 */
 	@Override
-	protected boolean insideBoard(HexCoordinate coord)
+	public boolean insideBoard(HexCoordinate coord)
 	{
 		boolean validXBoundary = inXBoundary(coord);
 		boolean validYBoundary = inYBoundary(coord);

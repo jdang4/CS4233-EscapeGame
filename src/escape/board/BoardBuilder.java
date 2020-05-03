@@ -12,9 +12,11 @@
 
 package escape.board;
 
+import java.util.Map;
 import escape.board.coordinate.CoordinateID;
 import escape.board.initializer.*;
 import escape.exception.EscapeException;
+import escape.piece.*;
 import escape.util.*;
 
 /**
@@ -24,10 +26,12 @@ import escape.util.*;
 public class BoardBuilder
 {
 	private final EscapeGameInitializer gameInitializer;
+	private final Map<PieceName, PieceDescriptor> pieceTypes;
 	
-	public BoardBuilder(EscapeGameInitializer init)
+	public BoardBuilder(EscapeGameInitializer init, Map<PieceName, PieceDescriptor> pieceTypes)
 	{
 		this.gameInitializer = init;
+		this.pieceTypes = pieceTypes;
 	}
 	
 	public GenericBoard makeBoard()
@@ -51,11 +55,12 @@ public class BoardBuilder
 	{
 		InitializeBoard initBoard = null;
 		
+		
 		// initializing a hex board
 		if (gameInitializer.getCoordinateType().equals(CoordinateID.HEX)) 
 		{
 			board = new HexBoard(gameInitializer.getxMax(), gameInitializer.getyMax());
-			initBoard = new HexBoardInitializer();
+			initBoard = new HexBoardInitializer(board);
 		}
 		 
 		// initializing a square board
@@ -71,19 +76,19 @@ public class BoardBuilder
 			if (gameInitializer.getCoordinateType().equals(CoordinateID.ORTHOSQUARE))
 			{
 				board = new OrthoSquareBoard(gameInitializer.getxMax(), gameInitializer.getyMax());
-				initBoard = new OrthoSquareBoardInitializer();
+				initBoard = new OrthoSquareBoardInitializer(board);
 			} 
 			
 			// initializing a square board with square coordinates
 			else
 			{
 				board = new SquareBoard(gameInitializer.getxMax(), gameInitializer.getyMax());
-				initBoard = new SquareBoardInitializer();
+				initBoard = new SquareBoardInitializer(board);
 			}
 		} 
 		
 		// initializes the board with the proper configurations
-		initBoard.initializeBoard(board, gameInitializer.getLocationInitializers());
+		initBoard.initializeBoard(pieceTypes, gameInitializer.getLocationInitializers());
 		
 		// returns the initialized board
 		return board;	

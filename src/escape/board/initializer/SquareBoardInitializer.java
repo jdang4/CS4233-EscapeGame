@@ -13,9 +13,11 @@
 package escape.board.initializer;
 
 import static escape.board.LocationType.CLEAR;
+import java.util.Map;
 import escape.board.*;
 import escape.board.coordinate.*;
-import escape.piece.EscapePiece;
+import escape.exception.EscapeException;
+import escape.piece.*;
 import escape.util.LocationInitializer;
 
 /**
@@ -23,16 +25,19 @@ import escape.util.LocationInitializer;
  * with Square Coordinates
  * @version Apr 14, 2020
  */
-public class SquareBoardInitializer implements InitializeBoard
+public class SquareBoardInitializer extends InitializeBoard
 {
+	public SquareBoardInitializer(GenericBoard b)
+	{
+		super(b);
+	}
 	/*
 	 * @see escape.board.initializer.InitializeBoard#initializeBoard(escape.board.Board, escape.util.LocationInitializer[])
 	 */
 	@Override
-	public void initializeBoard(Board board, LocationInitializer... initializers)
+	public void initializeBoard(Map<PieceName, PieceDescriptor> pieceTypes, LocationInitializer... initializers)
 	{  
-		SquareBoard b = (SquareBoard) board;
-		b.setCoordinateID(CoordinateID.SQUARE);
+		setBoardType();
 		
 		if (initializers == null)
 		{
@@ -43,7 +48,16 @@ public class SquareBoardInitializer implements InitializeBoard
 			SquareCoordinate c = SquareCoordinate.makeCoordinate(li.x, li.y);
  
 			if (li.pieceName != null) {
-				b.putPieceAt(new EscapePiece(li.player, li.pieceName), c);
+				if (!pieceTypes.containsKey(li.pieceName))
+				{
+					throw new EscapeException("Invalid Piece Type");
+					
+				}
+				
+				PieceDescriptor descriptor = pieceTypes.get(li.pieceName);
+				
+				EscapePiece piece = new EscapePiece(li.player, li.pieceName, descriptor);
+				b.putPieceAt(piece, c);
 			}
 			
 			if (li.locationType != null && li.locationType != CLEAR) {

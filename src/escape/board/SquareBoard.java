@@ -32,7 +32,7 @@ public class SquareBoard extends GenericBoard<SquareCoordinate> implements Board
 		this.spaces = new HashMap<SquareCoordinate, LocationType>();
 		type = BoardType.SQUARE;
 	} 
-	  
+	
 	/*
 	 * @see escape.board.GenericBoard#sameCoordinate(escape.board.coordinate.Coordinate)
 	 */
@@ -56,8 +56,8 @@ public class SquareBoard extends GenericBoard<SquareCoordinate> implements Board
 	 * @return whether the coordinate is within the board:
 	 * 			true -> in the board, false -> not in the board
 	 */
-	@Override
-	protected boolean insideBoard(SquareCoordinate coord)
+	@Override 
+	public boolean insideBoard(SquareCoordinate coord)
 	{
 		if (coord.getX() > 0 && coord.getX() <= getXMax())
 		{
@@ -78,7 +78,7 @@ public class SquareBoard extends GenericBoard<SquareCoordinate> implements Board
 	{
 		if (!sameCoordinate(coord))
 		{
-			throw new EscapeException("Invalid Coordinate Type");
+			return null;
 		}
 		
 		else if (pieces.containsKey(coord))

@@ -19,7 +19,7 @@
     	<x>15</x>
     	<y>15</y>
     	<locationType>CLEAR</locationType><player>PLAYER1</player>
-    	<pieceName>FROG</pieceName>
+    	<pieceName>SNAIL</pieceName>
     	</locationInitializers><!-- Piece items, an array of pieceTypes, 1 or more -->
     <pieceTypes>
         <movementPattern>LINEAR</movementPattern>
@@ -38,6 +38,10 @@
             <attrType>BOOLEAN</attrType>
             <booleanValue>false</booleanValue>
         </attributes>
+        <attributes>
+        	<id>DISTANCE</id>
+        	<attrType>INTEGER</attrType>
+        	<intValue>5</intValue></attributes>
     </pieceTypes>
     
 </escapeGameInitializer>

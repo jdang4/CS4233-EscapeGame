@@ -93,6 +93,6 @@ public class EscapeGameInitializerTest
         EscapeGameInitializer egi1;
         Unmarshaller mub = contextObj.createUnmarshaller();
         egi1 = (EscapeGameInitializer)mub.unmarshal(new StringReader(s));
-        System.out.println(egi1.toString());
+        //System.out.println(egi1.toString());
     }
 }

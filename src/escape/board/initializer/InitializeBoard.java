@@ -12,21 +12,44 @@
 
 package escape.board.initializer;
 
-import escape.board.Board;
+import java.util.Map;
+import escape.board.*;
+import escape.board.coordinate.*;
+import escape.piece.*;
 import escape.util.LocationInitializer;
 
 /**
  * Description
  * @version Apr 14, 2020
  */
-public interface InitializeBoard
+public abstract class InitializeBoard
 {
-	/**
-	 * This method is called to initialize the correct board
-	 * @param b
-	 * 			the board to initialize
-	 * @param initializers
-	 * 			the setup information that is used to initialize the board
-	 */
-	public void initializeBoard(Board b, LocationInitializer... initializers);
+	protected GenericBoard b;
+	
+	public InitializeBoard(GenericBoard b) 
+	{
+		this.b = b;
+	}
+	
+	public abstract void initializeBoard(Map<PieceName, PieceDescriptor> pieceTypes, LocationInitializer...initializers);
+	
+	public void setBoardType()
+	{
+		BoardType boardType = b.getBoardType();
+		
+		if (boardType.equals(BoardType.HEX)) 
+		{
+			b.setCoordinateID(CoordinateID.HEX);
+		}
+		
+		else if (boardType.equals(BoardType.SQUARE))
+		{
+			b.setCoordinateID(CoordinateID.SQUARE);
+		}
+		
+		else 
+		{
+			b.setCoordinateID(CoordinateID.ORTHOSQUARE);
+		}
+	}
 }

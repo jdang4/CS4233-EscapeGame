@@ -61,17 +61,17 @@ public class EscapeGameBuilder
     		throw new EscapeException("Detected Invalid Config file");
     	}
     	
-    	CoordinateID gameCoordinateID = gameInitializer.getCoordinateType();
-    	
-    	BoardBuilder boardBuilder = new BoardBuilder(gameInitializer);
-    	
-    	GenericBoard gameBoard = boardBuilder.makeBoard();
-    	
     	Map<PieceName, PieceDescriptor> pieceTypes = new HashMap<PieceName, PieceDescriptor>();
     	
+    	// getting all the piece type intitializers
     	for (PieceTypeInitializer init : gameInitializer.getPieceTypes())
     	{
     		PieceDescriptor descriptor = new PieceDescriptor(init);
+    		
+    		if (!descriptor.checkingFlyAndDistance()) 
+    		{
+    			throw new EscapeException("Fly Distance Error Found");
+    		}
     		
     		if (pieceTypes.containsKey(descriptor.getName()))
     		{
@@ -88,9 +88,12 @@ public class EscapeGameBuilder
     		pieceTypes.put(init.getPieceName(), descriptor);
     	}
     	
-    	EscapeGameController controller = new EscapeGameController(gameBoard, gameCoordinateID);
-    	controller.setPieceTypes(pieceTypes);
+    	// build the board
+    	BoardBuilder boardBuilder = new BoardBuilder(gameInitializer, pieceTypes);
     	
+    	GenericBoard gameBoard = boardBuilder.makeBoard();
+    	
+    	EscapeGameController controller = new EscapeGameController(gameBoard);
     	
         return controller;
     }

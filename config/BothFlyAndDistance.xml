@@ -15,30 +15,36 @@
         <locationType>BLOCK</locationType>
     </locationInitializers>
     
-    <!-- Piece items, an array of pieceTypes, 1 or more -->
+    <locationInitializers>
+    	<x>15</x>
+    	<y>15</y>
+    	<locationType>CLEAR</locationType><player>PLAYER1</player>
+    	<pieceName>FROG</pieceName>
+    	</locationInitializers><!-- Piece items, an array of pieceTypes, 1 or more -->
     <pieceTypes>
         <movementPattern>LINEAR</movementPattern>
         <pieceName>FROG</pieceName>
         <attributes>
-            <id>DISTANCE</id>
-            <attrType>INTEGER</attrType>
-            <intValue>5</intValue>
+            <id>JUMP</id>
+            <attrType>BOOLEAN</attrType>
+            <booleanValue>true</booleanValue>
         </attributes>
+        <attributes>
+        	<id>FLY</id>
+        	<attrType>INTEGER</attrType>
+        	<intType>5</intType></attributes>
     </pieceTypes>
     <pieceTypes>
         <movementPattern>LINEAR</movementPattern>
         <pieceName>HORSE</pieceName>
         <attributes>
-            <id>UNBLOCK</id>
-            <attrType>BOOLEAN</attrType>
-            <booleanValue>false</booleanValue>
-        </attributes>
+            <id>DISTANCE</id>
+            <attrType>INTEGER</attrType>
+            <intType>5</intType></attributes>
+        <attributes>
+        	<id>FLY</id>
+        	<attrType>INTEGER</attrType>
+        	<intType>5</intType></attributes>
     </pieceTypes>
-    <pieceTypes>
-    	<movementPattern>LINEAR</movementPattern>
-    	<pieceName>FROG</pieceName>
-    	<attributes>
-    		<id>DISTANCE</id>
-    		<attrType>INTEGER</attrType>
-    		<intValue>6</intValue></attributes></pieceTypes>
+    
 </escapeGameInitializer>

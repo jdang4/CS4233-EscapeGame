@@ -117,10 +117,12 @@ public class EscapeGameInitializer
 	{
 		this.pieceTypes = types;
 	}
-
+	
+	
 	/*
 	 * @see java.lang.Object#toString()
 	 */
+	/*
 	@Override
 	public String toString()
 	{
@@ -129,5 +131,6 @@ public class EscapeGameInitializer
 		    + Arrays.toString(locationInitializers) + ", types="
 		    + Arrays.toString(pieceTypes) + "]";
 	}
+	*/
 	
 }
