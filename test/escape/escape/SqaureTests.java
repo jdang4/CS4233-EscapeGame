@@ -135,7 +135,10 @@ class SqaureTests
 						"config/SquareBoardWithPieces.xml", 7, 11, 9, 13),
 				// testing fly diagonal move over block and piece
 				Arguments.of(
-						"config/SquareBoardWithPieces.xml", 4, 3, 7, 6)
+						"config/SquareBoardWithPieces.xml", 4, 3, 7, 6),
+				// testing with jump and unblock set to true
+				Arguments.of(
+						"config/SquareBoardWithPieces.xml", 15, 7, 15, 4)
 				);
 	}
 	
@@ -158,7 +161,11 @@ class SqaureTests
 		return Stream.of(
 				// can't make short of distance because EXIT is in the way of possible path
 				Arguments.of(
-						"config/SquareBoardWithPieces.xml", 15, 7, 15, 10)
+						"config/SquareBoardWithPieces.xml", 15, 7, 15, 10),
+				Arguments.of(
+						"config/SquareBoardWithPieces.xml", 4, 3, 5, 4),
+				Arguments.of(
+						"config/SquareBoardWithPieces.xml", 4, 3, 1, 0)
 				);
 	}
 	

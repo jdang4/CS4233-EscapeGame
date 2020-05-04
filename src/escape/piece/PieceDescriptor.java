@@ -13,6 +13,7 @@
 package escape.piece;
 
 import java.util.ArrayList;
+import escape.exception.EscapeException;
 import escape.util.PieceTypeInitializer;
 import escape.util.PieceTypeInitializer.PieceAttribute;
 
@@ -134,9 +135,13 @@ public class PieceDescriptor
 					pa.getId().equals(PieceAttributeID.DISTANCE))
 			{
 				result = pa.getIntValue();
-			}
+			} 
 		}
 		
+		if (result < 0)
+		{
+			throw new EscapeException("No Negative Values");
+		}
 		return result;
 	}
 	

@@ -1,0 +1,109 @@
+TDD TODO LIST
+Jonathan Dang
+2020 D-term
+Escape Beta
+
+SQUARE BOARD
+==================================================================================================================================
+makeGameManager of No Location Initializer Board ==> non null = true
+makeGameManager of Valid Game Config ==> non null = true
+makeCoordinate(15, 15) == SquareCoordinate.makeCoordinate(15, 15) ==> true = true
+placed piece at (15, 15), getPieceAt(15, 15) ==> non null = true
+put null at (15, 15), getPieceAt(15, 15) ==> null = true
+no piece at (19, 19), getPieceAt(19, 19) ==> null = true
+gettingPieceAt HexCoordinate(15, 15) [piece exist @ SquareCoordinate(15, 15)] ==> null = true
+gettingPieceAt(100, 100) [Out of Bounds] ==> null = true
+
+TESTING VALID MOVE
+(15, 15) ==> (16, 16) [Fly=5, OMNI] ==> true = true
+(15, 15) ==> (16, 19) [Fly=5, OMNI] ==> true = true
+(15, 15) ==> (12, 15) [Fly=5, OMNI] ==> true = true
+(6, 5) ==> (5, 8) [Distance=9, Jump=true, ORTHO] ==> true = true
+(6, 5) ==> (4, 6) [Distance=9, Jump=true, ORTHO] ==> true = true
+(4, 3) ==> (6, 5) [Fly=10, UnBlock=false, DIAGONAL] ==> true = true
+(7, 11) ==> (9, 13) [Distance=9, Jump=true, ORTHO] ==> true = true
+(4, 3) ==> (7, 6) [Fly=10, UnBlock=false, DIAGONAL] ==> true = true
+(15, 7) ==> (15, 4) [Distance=3, Value=12, UnBlock=true, Jump=true, ORTHO] ==> true = true
+
+TESTING INVALID MOVES
+(3, 3) ==> (3, 2) (No Piece at Source) ==> false = true ** PLEASE READ: FOR SAKE OF ORGANIZATION I PUT THIS HERE, BUT THIS WAS FIRST TESTED WHEN DESIGNING MOVE FUNCTION **
+(15, 7) ==> (15, 10) [Distance=3, ORTHO] (EXIT in the way and no other possible paths) ==> false = true
+(4, 3) ==> (5, 4) [Fly=10, UnBlock=false, DIAGONAL] (BLOCK is the destination) ==> false = true
+(15, 7) ==> (15, 7) [Distance=3, Value=12, UnBlock=true, Jump=true, ORTHO] (Not Moving) ==> false = true
+(4, 3) ==> (1, 0) [Fly=10, UnBlock=false, DIAGONAL] (Wanting to move out of bounds) ==> false = true
+
+ERROR TESTS
+==================================================================================================================================
+(15, 15) ==> (12, 14) [No Fly or Distance] ==> throws error = true
+(15, 15) ==> (12, 14) [Invalid Piece Type put on Board] ==> throws error = true
+(15, 15) ==> (12, 14) [Found both fly and distance] ==> throws error = true
+(15, 15) ==> (12, 14) [Found 2 of the Same PieceType with different attributes] ==> throws error = true
+(15, 15) ==> (12, 14) [Have Orthogonal Move Pattern on Hex Board] ==> throws error = true
+(15, 15) ==> (12, 14) [Have Diagonal Move Pattern on Hex Board] ==> throws error = true
+(15, 15) ==> (12, 14) [No Piece Types were specified in config file] ==> throws error = true
+(15, 15) ==> (12, 14) [No CoordinateID was found in config file] ==> throws error = true
+(15, 15) ==> (12, 14) [Not found piece type put on board] ==> throws error = true
+(15, 15) ==> (12, 14) [Diagonal Movement on an Orthosquare Board] ==> throws error = true
+(15, 15) ==> (12, 14) [Making Infinite Square Board] ==> throws error = true
+(15, 15) ==> (12, 14) [Detected a Negative Int Value in either Fly or Distance] ==> throws error = true
+putting piece at OrthoSquareCoordinate(15, 15) on Square Board ==> throws error = true
+putting piece at SquareCoordinate(15, 15) on Hex Board ==> throws error = true
+putting piece at SquareCoordinate(15, 15) on OrthoSquare Board ==> throws error = true
+putting piece at SquareCoordinate(5, 6) on Square Board where BLOCK resides ==> throws error = true
+putting piece at HexCoordinate(5, 6) on Hex Board where BLOCK resides ==> throws error = true
+putting piece at OrthoSquareCoordinate(5, 6) on OrthoSquare Board where BLOCK resides ==> throws error = true
+setting location EXIT at OrthoSquareCoordinate(100, 106) on OrthoSquare Board [Out of Bounds] ==> throws error = true
+
+
+ORTHOSQUARE BOARD
+==================================================================================================================================
+makeGameManager of No Location Initializer Board ==> non null = true
+makeGameManager of Valid Game Config ==> non null = true
+makeCoordinate(15, 15) == OrthoSquareCoordinate.makeCoordinate(15, 15) ==> true = true
+placed piece at (15, 15), getPieceAt(15, 15) ==> non null = true
+put null at (15, 15), getPieceAt(15, 15) ==> null = true
+no piece at (19, 19), getPieceAt(19, 19) ==> null = true
+gettingPieceAt HexCoordinate(15, 15) [piece exist @ OrthoSquareCoordinate(15, 15)] ==> null = true
+gettingPieceAt(100, 100) [Out of Bounds] ==> null = true
+
+TESTING VALID MOVE
+(6, 6) ==> (4, 6) [Fly=5, OMNI] ==> true = true
+(6, 6) ==> (6, 3) [Fly=5, OMNI] ==> true = true
+
+TESTING INVALID MOVES
+(6, 5) ==> (4, 5) [Distance=9, Jump=true, ORTHO] (EXIT at destination) ==> false = true
+(4, 3) ==> (4, 6) [Distance=10, LINEAR] (can only go through EXIT to get to location) ==> false = true
+(4, 3) ==> (4, 3) [Distance=10, LINEAR] (unable to move to same spot) ==> false = true
+(4, 3) ==> (3, 2) [Distance=10, LINEAR] (unable to make move with just LINEAR) ==> false = true
+(3, 3) ==> (3, 2) (No Piece at Source) ==> false = true
+(6, 7) ==> (6, 6) [Distance=9, Jump=true, ORTHO] (Same Player at Destination) ==> false = true
+(15, 15) ==> (12, 12) [Fly=5, OMNI] (unable to make move due to only having orthogonal despite having omni) ==> false = true
+(6, 7) ==> (5, 7) [Distance=9, Jump=true, ORTHO] (Moving to Block) ==> false = true
+
+
+HEX BOARD
+==================================================================================================================================
+makeGameManager of No Location Initializer Board ==> non null = true
+makeGameManager of Valid Game Config ==> non null = true
+makeCoordinate(15, 15) == HexCoordinate.makeCoordinate(15, 15) ==> true = true
+placed piece at (150, 150), getPieceAt(150, 150) ==> non null = true
+put null at (15, 15), getPieceAt(15, 15) ==> null = true
+no piece at (19, 19), getPieceAt(190, 190) ==> null = true
+gettingPieceAt HexCoordinate(15, 15) [piece exist @ SquareCoordinate(15, 15)] ==> null = true
+
+TESTING VALID MOVES
+(15, 15) ==> (16, 16) [Fly=5, OMNI] ==> true = true
+(4, 3) ==> (7, 3) [Fly=10, LINEAR] ==> true = true
+(6, 7) ==> (6, 8) [Distance=9, Jump=true, OMNI] ==> true = true
+(6, 6) ==> (4, 6) [Fly=5, OMNI] ==> true = true
+(6, 5) ==> (6, 7) [Distance=9, Jump=true, OMNI] ==> true = true
+(6, 5) ==> (3, 5) [Distance=9, Jump=true, OMNI] ==> true = true
+(6, 5) ==> (4, 7) [Distance=9, Jump=true, OMNI] ==> true = true
+
+TESTING INVALID MOVES
+(4, 3) ==> (3, 5) [Fly=10, LINEAR] (can't make with linear move) ==> false = true
+(15, 7) ==> (15, 8) [Distance=0, LINEAR] (can't make with a distance=0) ==> false = true
+
+MOVING TO EXIT
+(4, 3) ==> (4, 5) [Fly=10, LINEAR] ==> true = true
+getPieceAt(4, 5) ==> null = true

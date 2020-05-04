@@ -45,8 +45,8 @@ class HexTests
 		= new EscapeGameBuilder(new File("config/HexBoardWithPieces.xml"));
 		EscapeGameManager emg = egb.makeGameManager();
 		
-		Coordinate c1 = emg.makeCoordinate(15, 15);
-		Coordinate c2 = HexCoordinate.makeCoordinate(15, 15); 
+		Coordinate c1 = emg.makeCoordinate(150, 150);
+		Coordinate c2 = HexCoordinate.makeCoordinate(150, 150); 
 		
 		assertNotNull(c1);
 		
@@ -81,7 +81,7 @@ class HexTests
 		= new EscapeGameBuilder(new File("config/HexBoardWithPieces.xml"));
 		EscapeGameManager emg = egb.makeGameManager();
 		
-		Coordinate NoPieces = emg.makeCoordinate(19, 19);
+		Coordinate NoPieces = emg.makeCoordinate(190, 190);
 		Coordinate invalidCoordinateType = SquareCoordinate.makeCoordinate(15, 15);
 		
 		assertNull(emg.getPieceAt(NoPieces));

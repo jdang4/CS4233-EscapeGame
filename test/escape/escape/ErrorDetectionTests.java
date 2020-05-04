@@ -25,7 +25,7 @@ import escape.exception.EscapeException;
 import escape.piece.*;
 
 /**
- * Description
+ * This test class is used to detect errors in the config file
  * @version May 1, 2020
  */
 class ErrorDetectionTests
@@ -35,10 +35,10 @@ class ErrorDetectionTests
 	@MethodSource("gameErrorProvider")
 	void attemptingToGetPieceAtInvalidCoordinateType(String fileName) throws Exception
 	{
-		EscapeGameBuilder egb 
-		= new EscapeGameBuilder(new File(fileName));
-		
 		Assertions.assertThrows(EscapeException.class, () -> {
+			EscapeGameBuilder egb 
+			= new EscapeGameBuilder(new File(fileName));
+			
 			EscapeGameManager emg = egb.makeGameManager();
 			
 			Coordinate src = emg.makeCoordinate(15, 15);
@@ -73,7 +73,9 @@ class ErrorDetectionTests
 				Arguments.of(
 						"config/Ortho_WithInvalidMovement.xml"),
 				Arguments.of(
-						"config/MakingInfiniteSquareBoard.xml")
+						"config/MakingInfiniteSquareBoard.xml"),
+				Arguments.of(
+						"config/NegativeIntValues.xml")
 				);
 	}
 	

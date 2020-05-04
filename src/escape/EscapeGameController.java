@@ -142,6 +142,12 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 	 */
 	private boolean checkFalseMoves(Coordinate from, Coordinate to, EscapePiece movingPiece)
 	{
+		// make sure the coordinates are valid
+		if (from == null || to == null)
+		{
+			return false;
+		}
+		
 		if (from.equals(to) || movingPiece == null)
 		{
 			return false;
@@ -156,7 +162,9 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		
 		EscapePiece pieceAtDest = board.getPieceAt(to);
 		
-		if (pieceAtDest != null && movingPiece.getPlayer().equals(pieceAtDest.getPlayer())) 
+		if ((movingPiece == null) || 
+				(pieceAtDest != null && movingPiece.getPlayer().equals(pieceAtDest.getPlayer()))
+				)
 		{
 			return false;
 		}
@@ -219,7 +227,6 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		// handling a linear move case
 		else
 		{
-			
 			int srcX = src.getX();
 			int srcY = src.getY();
 			
@@ -261,34 +268,11 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 	{
 		EscapePiece movingPiece = getPieceAt(from);
 		
-		/**
-		 * TODO
-		 * (1) extract the piece's pieceType info (DONE)
-		 * (2) do some error checking based on pieceType info
-		 * 		(2.1) Hex cannot have Orthothogonal or Diagonal (DONE)
-		 * 		(2.2) OMNI needs distance value (DONE)
-		 * 		(2.3) FLY and JUMP cannot co-exist (DONE)
-		 * 		(2.4) FLY and DISTANCE cannot co-exist (DONE)
-		 * 		(2.5) Must have at least a Fly or Distance (DONE)
-		 * 		(2.6) Ortho cannot have Diagonal (DONE)
-		 * 		(2.7) Saw 2 MovementPatterns (DONE)
-		 * 		(2.8) Start or End not in board
-		 * 
-		 * (3) false cases
-		 * 		(3.1) Block at ending location (DONE)
-		 * 		(3.2) Same Piece Type At end location
-		 * 		(3.3) Non Omni and exits board when in route (DONE)
-		 * 		(3.4) Cannot reach location with its specifications (DONE)
-		 * 		(3.5) Distance is too small to reach to destination (DONE)
-		 * 		(3.6) No Pieces at Start (DONE)
-		 * 		(3.7) Start == End (DONE)
-		 * 	
-		 */ 
-		
-		if (movingPiece == null)
+		if (!checkFalseMoves(from, to, movingPiece))
 		{
 			return false;
-		}
+		} 
+		
 		MovementPatternID movePattern = movingPiece.getDescriptor().getMovementPattern();
 		
 		if (!(verifyMovementPatternForHex(movePattern) && 
@@ -297,11 +281,6 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		{
 			throw new EscapeException("Invalid Movement Pattern for Board");
 		}
-		
-		if (!checkFalseMoves(from, to, movingPiece))
-		{
-			return false;
-		} 
 		
 		int limit = movingPiece.getDescriptor().getFlyOrDistanceValue();
 		
@@ -312,8 +291,9 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		
 		if (availableDirections == null)
 		{
-			return false;
+			return false; 
 		}
+		
 		boolean moveResult = findPath.canMakeMove(start, end, availableDirections, limit);
 		
 		if (moveResult)
@@ -322,7 +302,5 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		}
 		return moveResult;
 	}
-	
-	
 	
 }
