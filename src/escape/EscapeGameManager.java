@@ -47,7 +47,7 @@ public interface EscapeGameManager<C extends Coordinate>
 	 * @param y the y component
 	 * @return the coordinate or null if the coordinate cannot be 
 	 */
-	C makeCoordinate(int x, int y);
+	C makeCoordinate(int x, int y); 
 	
 	/**
 	 * Add an observer to this manager. Whever the move() method returns

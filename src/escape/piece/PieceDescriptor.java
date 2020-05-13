@@ -70,6 +70,21 @@ public class PieceDescriptor
 		return this.attributes;
 	}
 	
+	public int getValue()
+	{
+		int value = 1;
+		for (PieceAttribute attribute : attributes)
+		{
+			if (attribute.getId().equals(PieceAttributeID.VALUE))
+			{
+				value = attribute.getIntValue();
+				break;
+			}
+		}
+		
+		return value;
+	}
+	
 	/**
 	 * This method gets the piece descriptor identity
 	 * 
@@ -138,11 +153,7 @@ public class PieceDescriptor
 			} 
 		}
 		
-		if (result < 0)
-		{
-			throw new EscapeException("No Negative Values");
-		}
-		return result;
+		return result; 
 	}
 	
 	/*

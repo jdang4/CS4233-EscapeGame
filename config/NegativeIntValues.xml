@@ -17,7 +17,7 @@
     <locationInitializers>
     	<x>15</x>
     	<y>15</y>
-    	<player>PLAYER2</player>
+    	<player>PLAYER1</player>
     	<pieceName>FROG</pieceName></locationInitializers>
 
     <!-- Piece items, an array of pieceTypes, 1 or more -->

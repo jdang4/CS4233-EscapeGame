@@ -103,6 +103,11 @@
 		<player>PLAYER1</player>
 		<pieceName>HUMMINGBIRD</pieceName></locationInitializers>
 	<locationInitializers>
+		<x>-20</x>
+		
+		<y>-20</y><player>PLAYER1</player>
+		<pieceName>HORSE</pieceName></locationInitializers>
+	<locationInitializers>
 		<x>15</x>
 		<y>9</y>
 		<locationType>EXIT</locationType></locationInitializers>

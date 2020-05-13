@@ -27,6 +27,7 @@ public class EscapePiece
     private final PieceName name;
     private final Player player;
     private PieceDescriptor descriptor;
+    private int value;
     
     /**
      * Constructor that takes the player and piece name.
@@ -44,6 +45,7 @@ public class EscapePiece
     	this.player = player;
     	this.name = name;
     	this.descriptor = descriptor;
+    	this.value = descriptor.getValue();
     }
 	
 	/**
@@ -61,6 +63,16 @@ public class EscapePiece
 	public PieceDescriptor getDescriptor()
 	{
 		return this.descriptor;
+	}
+	
+	public int getValue()
+	{
+		return value;
+	}
+	
+	public void setValue(int val)
+	{
+		this.value = val;
 	}
 	
 

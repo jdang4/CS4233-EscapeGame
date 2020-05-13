@@ -40,11 +40,7 @@ class ErrorDetectionTests
 			= new EscapeGameBuilder(new File(fileName));
 			
 			EscapeGameManager emg = egb.makeGameManager();
-			
-			Coordinate src = emg.makeCoordinate(15, 15);
-			Coordinate dest = emg.makeCoordinate(12, 14);
-			
-			emg.move(src, dest);
+
 			}
 		);
 	}
@@ -61,21 +57,15 @@ class ErrorDetectionTests
 				Arguments.of(
 						"config/MultipleOfSamePieceType.xml"),
 				Arguments.of(
-						"config/Hex_WithInvalidMovement_Ortho.xml"),
-				Arguments.of(
-						"config/Hex_WithInvalidMovement_Diag.xml"),
-				Arguments.of(
 						"config/NoPieceTypes.xml"),
 				Arguments.of(
 						"config/NoCoordinateID.xml"),
 				Arguments.of(
 						"config/NoMatchPieceName.xml"),
 				Arguments.of(
-						"config/Ortho_WithInvalidMovement.xml"),
-				Arguments.of(
 						"config/MakingInfiniteSquareBoard.xml"),
 				Arguments.of(
-						"config/NegativeIntValues.xml")
+						"config/game/Game_Error.xml")
 				);
 	}
 	
@@ -216,5 +206,5 @@ class ErrorDetectionTests
 			}
 		);
 	}
-
+	
 }

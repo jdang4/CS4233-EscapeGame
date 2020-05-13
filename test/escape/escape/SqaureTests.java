@@ -24,7 +24,7 @@ import escape.board.coordinate.*;
 import escape.piece.*;
 
 /**
- * Description
+ * My test cases on a square board
  * @version Apr 27, 2020
  */
 class SqaureTests
@@ -38,6 +38,16 @@ class SqaureTests
 		EscapeGameManager emg = egb.makeGameManager();
 		
 		assertNotNull(emg);
+	}
+	
+	@Test
+	void noNegatives() throws Exception
+	{
+		EscapeGameBuilder egb 
+		= new EscapeGameBuilder(new File("config/NegativeIntValues.xml"));
+		EscapeGameManager emg = egb.makeGameManager();
+		
+		assertFalse(emg.move(emg.makeCoordinate(15, 15), emg.makeCoordinate(15, 16)));
 	}
 	
 	@Test
@@ -55,6 +65,27 @@ class SqaureTests
 		assertTrue(c1.equals(c2));
 		
 		assertNull(emg.makeCoordinate(100, 100));
+	}
+	
+	@Test
+	void testingPieceDescriptorEquals() throws Exception
+	{
+		EscapeGameBuilder egb 
+		= new EscapeGameBuilder(new File("config/SquareBoardWithPieces.xml"));
+		EscapeGameManager emg = egb.makeGameManager();
+		
+		Coordinate horseCoordinate = emg.makeCoordinate(6, 5);
+		EscapePiece horse = emg.getPieceAt(horseCoordinate);
+		
+		Coordinate anotherHorseCoordinate = emg.makeCoordinate(7, 11);
+		EscapePiece anotherHorse = emg.getPieceAt(anotherHorseCoordinate);
+		
+		Coordinate frogCoordinate = emg.makeCoordinate(6, 6);
+		EscapePiece frog = emg.getPieceAt(frogCoordinate);
+		
+		assertTrue(horse.getDescriptor().equals(anotherHorse.getDescriptor()));
+		assertFalse(horse.getDescriptor().equals(emg));
+		assertFalse(horse.getDescriptor().equals(frog.getDescriptor()));
 	}
 	
 	@Test
@@ -113,6 +144,7 @@ class SqaureTests
 	{
 		return Stream.of(
 				// making basic move
+				
 				Arguments.of(
 						"config/SquareBoardWithPieces.xml", 15, 15, 16, 16),
 				// handling if EXIT in route but can move around it
@@ -127,9 +159,6 @@ class SqaureTests
 				// verifying that algorithm gets the best shortest path
 				Arguments.of(
 						"config/SquareBoardWithPieces.xml", 6, 5, 4, 6),
-				// testing a fly diagonal move
-				Arguments.of(
-						"config/SquareBoardWithPieces.xml", 4, 3, 6, 5),
 				// test move algorithm against Block and Exit
 				Arguments.of(
 						"config/SquareBoardWithPieces.xml", 7, 11, 9, 13),
@@ -144,16 +173,23 @@ class SqaureTests
 	
 	@ParameterizedTest
 	@MethodSource("falseMovesProvider")
-	void testingFalseMoves(String fileName, int srcX, int srcY, int destX, int destY) throws Exception
+	void testingFalseMoves(String message, int srcX, int srcY, int destX, int destY) throws Exception
 	{
 		EscapeGameBuilder egb 
-		= new EscapeGameBuilder(new File(fileName));
+		= new EscapeGameBuilder(new File("config/SquareBoardWithPieces.xml"));
 		EscapeGameManager emg = egb.makeGameManager();
 		
-		Coordinate start = emg.makeCoordinate(srcX, srcY);
+		TestObserver obs = new TestObserver();
+		
+		emg.addObserver(obs);
+		
+		Coordinate start = emg.makeCoordinate(srcX, srcY); 
 		Coordinate end = emg.makeCoordinate(destX, destY);
 		
 		assertFalse(emg.move(start, end));
+		assertNotNull(obs.getMessage());
+		//assertEquals(message, obs.getMessage());
+		
 	}
 	
 	static Stream<Arguments> falseMovesProvider()
@@ -161,11 +197,17 @@ class SqaureTests
 		return Stream.of(
 				// can't make short of distance because EXIT is in the way of possible path
 				Arguments.of(
-						"config/SquareBoardWithPieces.xml", 15, 7, 15, 10),
+						"attempt to go over exit", 15, 7, 15, 10),
+				// BLOCK at destination
 				Arguments.of(
-						"config/SquareBoardWithPieces.xml", 4, 3, 5, 4),
+						"land on block", 4, 3, 5, 4),
+				// not moving
 				Arguments.of(
-						"config/SquareBoardWithPieces.xml", 4, 3, 1, 0)
+						"Moving to Same Spot", 15, 7, 15, 7),
+				// trying to move out of bounds
+				Arguments.of(
+						"Out of Bounds Coordinate", 4, 3, 1, 0)
+				
 				);
 	}
 	

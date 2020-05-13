@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <escapeGameInitializer>
 	<coordinateType>HEX</coordinateType>
-    <!-- Board items -->
+	<rules>
+		<id>REMOVE</id></rules>
+	<!-- Board items -->
     <xMax>20</xMax>
     <yMax>25</yMax>
     <!-- An array of these, 0 or more --><locationInitializers>
@@ -84,17 +86,17 @@
 	<pieceName>HORSE</pieceName></locationInitializers><locationInitializers>
 	<x>6</x>
 	<y>6</y>
-	<player>PLAYER2</player>
+	<player>PLAYER1</player>
 	<pieceName>FROG</pieceName>
 </locationInitializers><locationInitializers>
 	<x>6</x>
 	<y>8</y>
-	<player>PLAYER1</player>
+	<player>PLAYER2</player>
 	<pieceName>HORSE</pieceName></locationInitializers>
 	<locationInitializers>
 		<x>4</x>
 		<y>3</y>
-		<player>PLAYER2</player>
+		<player>PLAYER1</player>
 		<pieceName>SNAIL</pieceName></locationInitializers>
 	<locationInitializers>
 		<x>15</x>
@@ -108,7 +110,7 @@
 	<locationInitializers>
 		<x>6</x>
 		<y>7</y>
-		<player>PLAYER2</player>
+		<player>PLAYER1</player>
 		<pieceName>SNAIL</pieceName></locationInitializers>
 	<locationInitializers>
 		<x>4</x>

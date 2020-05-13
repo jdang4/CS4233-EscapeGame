@@ -20,6 +20,7 @@ import escape.board.coordinate.CoordinateID;
 import escape.board.initializer.*;
 import escape.exception.EscapeException;
 import escape.piece.*;
+import escape.rule.*;
 import escape.util.*;
 
 /**
@@ -83,17 +84,27 @@ public class EscapeGameBuilder
     			}
     			
     			continue;
-    		}
+    		} 
     		
     		pieceTypes.put(init.getPieceName(), descriptor);
     	}
-    	
+    	    	
     	// build the board
     	BoardBuilder boardBuilder = new BoardBuilder(gameInitializer, pieceTypes);
     	
     	GenericBoard gameBoard = boardBuilder.makeBoard();
     	
-    	EscapeGameController controller = new EscapeGameController(gameBoard);
+    	Rule[] gameRules = gameInitializer.getRules();
+    	RuleDescriptor ruleDescriptor = new RuleDescriptor(); 
+    	
+    	if (ruleDescriptor.detectedInvalidConfig(gameRules))
+    	{
+    		throw new EscapeException("Invalid Config File");
+    	}
+    	
+    	ruleDescriptor.initialize(gameRules);
+    	
+    	EscapeGameController controller = new EscapeGameController(gameBoard, ruleDescriptor);
     	
         return controller;
     }

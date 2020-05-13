@@ -119,7 +119,7 @@ class HexTests
 				// verifying FLY 
 				Arguments.of(
 						"config/HexBoard_Finite.xml", 6, 6, 4, 6),
-				// making an omni capture move
+				// making a jump capture move
 				Arguments.of(
 						"config/HexBoardWithPieces.xml", 6, 5, 6, 7),
 				// verifying shortest path can be made
@@ -127,7 +127,11 @@ class HexTests
 						"config/HexBoardWithPieces.xml", 6, 5, 3, 5),
 				// testing with complex jumping to get shortest path
 				Arguments.of(
-						"config/HexBoardWithPieces.xml", 6, 5, 4, 7)
+						"config/HexBoardWithPieces.xml", 6, 5, 4, 7),
+				Arguments.of(
+						"config/HexBoardWithPieces.xml", 6, 5, 4, 7),
+				Arguments.of(
+						"config/HexBoardWithPieces.xml", -20, -20, -25, -22)
 				);
 	}
 	

@@ -135,10 +135,10 @@ class OrthoTests
 	static Stream<Arguments> falseMovesProvider()
 	{
 		return Stream.of(
-				// going to exit
+				// trying to go through a block
 				Arguments.of(
 						"config/OrthoSquareBoardWithPieces.xml", 6, 5, 4, 5),
-				// went through exit
+				// went through exit on path
 				Arguments.of(
 						"config/OrthoSquareBoardWithPieces.xml", 4, 3, 4, 6),
 				// moving to same spot
@@ -150,7 +150,7 @@ class OrthoTests
 				// no piece at start
 				Arguments.of(
 						"config/OrthoSquareBoardWithPieces.xml", 3, 3, 3, 2),
-				// ending location is of the same player
+				// trying to capture the same player
 				Arguments.of(
 						"config/OrthoSquareBoardWithPieces.xml", 6, 7, 6, 6),
 				// can't make move due to only having orthogonal despite being OMNI

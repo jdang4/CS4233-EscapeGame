@@ -12,10 +12,12 @@
 
 package escape;
 
+import java.util.ArrayList;
 import escape.board.*;
 import escape.board.coordinate.*;
 import escape.exception.EscapeException;
 import escape.piece.*;
+import escape.rule.*;
 
 /**
  * This class is the instantiation of a game manager. This is the centralizing
@@ -26,6 +28,17 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 {
 	private final GenericBoard board;
 	private final PathFindingAlgorithm findPath;
+	private final MovementValidator movementValidator;
+	private final RuleValidator ruleValidator;
+	
+	private ArrayList<GameObserver> observers = new ArrayList<GameObserver>();
+	private final RuleDescriptor ruleDescriptor;
+	
+	private Player playerTurn;
+	private boolean winCondition;
+	private Player winner;
+	private int numOfTurns;
+
 	
 	/**
 	 * The constructor for a game controller
@@ -33,10 +46,16 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 	 * @param board 
 	 * 		the board that is used by the controller
 	 */
-	public EscapeGameController(GenericBoard board) 
+	public EscapeGameController(GenericBoard board, RuleDescriptor descriptor) 
 	{
 		this.board = board;
 		this.findPath = new PathFindingAlgorithm(board);
+		this.movementValidator = new MovementValidator(board);
+		this.ruleValidator = new RuleValidator(descriptor);
+		this.playerTurn = Player.PLAYER1;
+		this.winCondition = false;
+		this.ruleDescriptor = descriptor;
+		this.numOfTurns = 0;
 	}
 	
 	/**
@@ -90,207 +109,73 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		return result;
 	}
 	
-	/**
-	 * This method verifys the movement pattern against a hex board
-	 * 
-	 * @param movePattern - the movement pattern to test against
-	 * @return
-	 * 		whether the movement pattern is allowed by the hex board
-	 * 		true -> is allowed; false -> is not allowed
-	 */
-	private boolean verifyMovementPatternForHex(MovementPatternID movePattern)
-	{
-		if (board.getBoardType().equals(BoardType.HEX) &&
-				(movePattern.equals(MovementPatternID.ORTHOGONAL) ||
-				movePattern.equals(MovementPatternID.DIAGONAL)))
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * This method verifys the movement pattern against a ortho board
-	 * 
-	 * @param movePattern - the movement pattern to test against
-	 * @return
-	 * 		whether the movement pattern is allowed by the ortho board
-	 * 		true -> is allowed; false -> is not allowed
-	 */
-	private boolean verifyMovementPatternForOrtho(MovementPatternID movePattern)
-	{
-		if (board.getBoardType().equals(BoardType.ORTHOSQUARE) &&
-				movePattern.equals(MovementPatternID.DIAGONAL))
-		{
-			return false;
-		}
-		
-		return true;
-	} 
-	
-	/**
-	 * This method checks for any moves that should return a false without having to 
-	 * test the movement pattern or having to find the path
-	 * 
-	 * @param from - the starting coordinate
-	 * @param to - the destingation coordinate
-	 * @param movingPiece - the escape piece that is moving
-	 * @return
-	 * 		whether it detected a false move or not
-	 * 		true -> detected a false move; false -> no detectin
-	 */
-	private boolean checkFalseMoves(Coordinate from, Coordinate to, EscapePiece movingPiece)
-	{
-		// make sure the coordinates are valid
-		if (from == null || to == null)
-		{
-			return false;
-		}
-		
-		if (from.equals(to) || movingPiece == null)
-		{
-			return false;
-		}
-		
-		LocationType BLOCK = LocationType.BLOCK;
-		
-		if (board.getLocationType(to).equals(BLOCK))
-		{
-			return false;
-		}
-		
-		EscapePiece pieceAtDest = board.getPieceAt(to);
-		
-		if ((movingPiece == null) || 
-				(pieceAtDest != null && movingPiece.getPlayer().equals(pieceAtDest.getPlayer()))
-				)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
-	 * This method is used to get the available movement direction for the path finding algorithm
-	 * 
-	 * @param pattern - the movement pattern id
-	 * @param src - the starting coordinate
-	 * @param dest - the ending coordinate
-	 * @return
-	 * 		the appropriate directions that depends against the board type used and the the movement pattern
-	 * 		given
-	 */
-	private int[][] getMovementDirections(MovementPatternID pattern, PathFinderCoordinate src, PathFinderCoordinate dest)
-	{
-		int[][] ORTHOGONAL = { {0,-1}, {0,1}, {-1,0}, {1,0} };
-		int[][] DIAGONAL = { {-1,-1}, {-1,1}, {1,-1}, {1,1} };
-		int[][] OMNI = { 
-				{0,-1}, {0,1}, {-1,0}, {1,0},
-				{-1,-1}, {-1,1}, {1,-1}, {1,1}
-		};
-		
-		if (pattern.equals(MovementPatternID.ORTHOGONAL))
-		{
-			return ORTHOGONAL;
-		}
-		
-		else if (pattern.equals(MovementPatternID.DIAGONAL))
-		{
-			return DIAGONAL;
-		}
-		
-		else if (pattern.equals(MovementPatternID.OMNI))
-		{
-			// omni on orthosquare board ==> orthogonal movement
-			if (board.getBoardType().equals(BoardType.ORTHOSQUARE))
-			{
-				return ORTHOGONAL;
-			}
-			
-			// handling the specific movements of a hex board
-			else if (board.getBoardType().equals(BoardType.HEX))
-			{
-				int[][] hex_OMNI = {
-						{-1, 1}, {0, 1}, {1,0},
-						{1,-1}, {0,-1}, {-1,0}
-				};
-				
-				return hex_OMNI;
-			}
-			
-			return OMNI;
-			
-		}
-		
-		// handling a linear move case
-		else
-		{
-			int srcX = src.getX();
-			int srcY = src.getY();
-			
-			int destX = dest.getX();
-			int destY = dest.getY();
-			
-			int xDiff = destX - srcX;
-			int yDiff = destY - srcY;
-			
-			int absXDiff = Math.abs(destX) - Math.abs(srcX);
-			int absYDiff = Math.abs(destY) - Math.abs(srcY);
-			
-			
-			if (board.getBoardType().equals(BoardType.ORTHOSQUARE))
-			{
-				if (absXDiff != 0 && absYDiff != 0)
-				{
-					return null;
-				}
-				
-			}
-			
-			// handling the zero case
-			int xDirection = (xDiff == 0) ? 0 : (xDiff / Math.abs(xDiff));
-			int yDirection = (yDiff == 0) ? 0 : (yDiff / Math.abs(yDiff));
-			
-			
-			int[][] LINEAR = { {xDirection, yDirection} };
-			
-			return LINEAR;
-		}
-	}
-	
 	/*
 	 * @see escape.EscapeGameManager#move(escape.board.coordinate.Coordinate, escape.board.coordinate.Coordinate)
 	 */
 	@Override
 	public boolean move(Coordinate from, Coordinate to)
 	{
-		EscapePiece movingPiece = getPieceAt(from);
-		
-		if (!checkFalseMoves(from, to, movingPiece))
+		if (winCondition)
 		{
-			return false;
-		} 
-		
-		MovementPatternID movePattern = movingPiece.getDescriptor().getMovementPattern();
-		
-		if (!(verifyMovementPatternForHex(movePattern) && 
-				verifyMovementPatternForOrtho(movePattern)))
+			String message = "Game is over and there were no winners";
 			
-		{
-			throw new EscapeException("Invalid Movement Pattern for Board");
+			if (winner != null)
+			{
+				message = "Game is over and " + winner.name() + " has won";
+			}
+			
+			notifyObservers(message, null);
+			return false;
 		}
 		
-		int limit = movingPiece.getDescriptor().getFlyOrDistanceValue();
+		// do some early checks for a false case
+		if (!movementValidator.passFalseCheck(from, to)) 
+		{
+			String falseMessage = movementValidator.getFalseMessage();
+			
+			notifyObservers(falseMessage, null);
+			return false;
+		}
+		
+		// verify the movement is a valid movement for board
+		if (!movementValidator.passErrorCheck(from, to)) 
+		{
+			String errorMessage = movementValidator.getErrorMessage();
+			EscapeException cause = new EscapeException(errorMessage);
+			notifyObservers(errorMessage, cause);
+			
+			return false;
+			
+		}
+		
+		EscapePiece movingPiece = getPieceAt(from);
+		
+		if (ruleValidator.notPlayerTurn(movingPiece, playerTurn))
+		{
+			notifyObservers(playerTurn.name() + " turn", null);
+			return false;
+		}
+		
+ 		// essentially the distance limit of the moving piece
+		int limit = movingPiece.getDescriptor().getFlyOrDistanceValue(); 
+		
+		if (limit < 0)
+		{
+			notifyObservers("No Negative Values", null);
+			return false;
+		}
 		
 		PathFinderCoordinate start = (PathFinderCoordinate) from;
 		PathFinderCoordinate end = (PathFinderCoordinate) to;
 		
-		int[][] availableDirections = getMovementDirections(movePattern, start, end);
+		int[][] availableDirections = movementValidator.getMovementDirections(start, end);
 		
+		// another early false check
 		if (availableDirections == null)
 		{
+			String falseMessage = movementValidator.getFalseMessage();
+			notifyObservers(falseMessage, null);
+			
 			return false; 
 		}
 		
@@ -298,9 +183,142 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 		
 		if (moveResult)
 		{
+			if (getPieceAt(to) != null)
+			{
+				if (ruleValidator.canBattle())
+				{
+					movingPiece = battle(movingPiece, to);
+				}
+				
+				else
+				{
+					notifyObservers("piece cannot battle", null);
+					return false;
+				}
+			}
+			
+			else if (board.getLocationType(to).equals(LocationType.EXIT))
+			{
+				ruleValidator.updateScore(movingPiece);
+			}
+			
 			board.putPieceAt(movingPiece, to);
+			board.putPieceAt(null, from);
+			
+			if (ruleValidator.checkIfGameEnded(numOfTurns))
+			{
+				winner = ruleValidator.getGameWinner();
+				
+				String gameEndMessage = "Tied Game";
+				
+				if (winner != null)
+				{
+					gameEndMessage = winner.name() + " wins";
+				}
+				
+				notifyObservers(gameEndMessage, null);
+				winCondition = true;
+			}
+			
+			this.playerTurn = (playerTurn.equals(Player.PLAYER1)) ? Player.PLAYER2 : Player.PLAYER1;
+			
+			if (playerTurn.equals(Player.PLAYER2))
+			{	
+				numOfTurns++;
+			}
 		}
+		
+		else
+		{
+			String falseMessage = findPath.getFalseMessage();
+			notifyObservers(falseMessage, null);
+			
+		}
+		
 		return moveResult;
+	}
+	
+	
+	
+	private EscapePiece battle(EscapePiece movingPiece, Coordinate dest)
+	{
+		RuleID battleID = ruleDescriptor.getBattleID();
+		
+		if (battleID.equals(RuleID.REMOVE))
+		{
+			return movingPiece;
+		}
+		
+		EscapePiece pieceAtDest = board.getPieceAt(dest);
+		
+		int movingPiece_val = movingPiece.getValue();
+		int pieceAtDest_val = pieceAtDest.getValue();
+		
+		// movingPiece won the battle
+		if (movingPiece_val > pieceAtDest_val)
+		{
+			movingPiece.setValue(movingPiece_val - pieceAtDest_val);
+			return movingPiece;
+		}
+		
+		// movingPiece lost the battle
+		else if (pieceAtDest_val > movingPiece_val)
+		{
+			pieceAtDest.setValue(pieceAtDest_val - movingPiece_val);
+			return pieceAtDest;
+		}
+		
+		// pieces "killed" each other
+		else
+		{
+			board.putPieceAt(null, dest);
+			return null;
+		}
+	}
+	
+	
+	/*
+	 * @see escape.EscapeGameManager#addObserver(escape.GameObserver)
+	 */
+	@Override
+	public GameObserver addObserver(GameObserver observer)
+	{
+		observers.add(observer);
+		
+		return observer;
+	}
+	
+	/*
+	 * @see escape.EscapeGameManager#removeObserver(escape.GameObserver)
+	 */
+	@Override
+	public GameObserver removeObserver(GameObserver observer)
+	{
+		observers.remove(observers.indexOf(observer));
+		
+		return observer;
+	}
+	
+	/**
+	 * This method is called to notify the observers who are observing the game
+	 * 
+	 * @param message - the message to notify each observers
+	 * @param error - the cause of the error (if any) 
+	 */
+	private void notifyObservers(String message, Throwable error)
+	{
+		for (GameObserver obs : observers)
+		{
+			if (error == null)
+			{
+				obs.notify(message);
+			}
+			
+			else
+			{
+				obs.notify(message, error);
+			}
+		}
 	}
 	
 }

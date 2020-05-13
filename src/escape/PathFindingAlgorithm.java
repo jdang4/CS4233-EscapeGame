@@ -31,6 +31,7 @@ public class PathFindingAlgorithm
 	private boolean jumpFlag = false;
 	private boolean unBlockFlag = false;
 	private boolean flyFlag = false;
+	private String falseMessage;
 	
 	/**
 	 * The constructor for the path finding algorithm class
@@ -42,6 +43,10 @@ public class PathFindingAlgorithm
 		this.board = board;
 	}
 	
+	public String getFalseMessage()
+	{
+		return falseMessage;
+	}
 	/**
 	 * This method is used to determine if the specific coordinate has been 
 	 * visitied yet
@@ -127,10 +132,10 @@ public class PathFindingAlgorithm
 		
 		this.DIRECTIONS = availableDirections;
 		
+		
+		
 		// call the shortest path algorithm
-		ArrayList<PathFinderCoordinate> path = findShortestPath(start, end, movingPiece.getPlayer());
-
-		System.out.println(path.size());
+		ArrayList<PathFinderCoordinate> path = findShortestPath(start, end, movingPiece.getPlayer(), limit);
 		
 		// check to see if the path meets distance or fly value limit
 		if (path.size() <= limit && path.size() > 0)
@@ -138,9 +143,21 @@ public class PathFindingAlgorithm
 			return true;
 		}
 		
+		else if (path.size() > limit)
+		{
+			if (start.distanceTo(end) > limit) 
+			{
+				falseMessage = "> limit";
+			}
+			
+			else 
+			{
+				falseMessage = "cannot make move";
+			}
+		}
 		return false;
 	}
-
+ 
 	/**
 	 * This method is the main logic of this class, where it implements the BFS algorithm in order to calculate 
 	 * the shortest path from the starting coordinate to the ending coordinate
@@ -151,9 +168,15 @@ public class PathFindingAlgorithm
 	 * @param player - the escape piece player type
 	 * @return
 	 * 		an array of the PathFinderCoordinates of the shortest path to the destingation or an empty list
-	 * 		if it is not possible 
+	 * 		if it is not possible
+	 * 
+	 * Code Citation:
+	 * Title: Shortest path in a Binary Maze
+	 * Author: Aditya Goel
+	 * Date: 05/1/2020
+	 * Availability: https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
 	 */
-	private ArrayList<PathFinderCoordinate> findShortestPath(PathFinderCoordinate src, PathFinderCoordinate dest, Player player)
+	private ArrayList<PathFinderCoordinate> findShortestPath(PathFinderCoordinate src, PathFinderCoordinate dest, Player player, int limit)
 	{
 		// acts as a reference to check which coordinates I have visited
 		visitedCoordinate = new HashMap<>(); 
@@ -190,11 +213,11 @@ public class PathFindingAlgorithm
                 	else 
                 	{
                 		// checking against block or exit
-                		if (!checkBlock(curX, curY) || foundExitInPath(curX, curY))
+                		if (!checkBlock(curX, curY) || foundExitInPath(curX, curY, dest))
                 		{
                 			continue;
                 		}
-                		
+               		
                 		// handling PIECE in PATH (not at final destination)
                 		if (foundPieceInPath(curX, curY) && !(dest.getX() == curX && dest.getY() == curY))
                 		{ 
@@ -202,26 +225,29 @@ public class PathFindingAlgorithm
                 			{
                 				int newX = curX + direction[0];
                 				int newY = curY + direction[1];
+                				
+                				// verify new coordinate is in board and has not been visited 
                 				if (isValidInBoard(newX, newY) && !hasVisited(newX, newY)) 
                 				{
-                					if (!checkBlock(newX, newY) || foundExitInPath(newX, newY))
+                					if (!checkBlock(newX, newY) || foundExitInPath(newX, newY, dest))
                             		{
                             			// go right to continue
                             		}
                 					
                 					else if (foundPieceInPath(newX, newY))
-                					{
-                						
+                					{	
                 						// go right to continue
                 					}
                 					
                 					else
                 					{
+                						// simulating a jumping move
                 						PathFinderCoordinate jumpedOver = createCoordinateWithParent(curX, curY, cur);
                 						
                 						PathFinderCoordinate jumpedTo = createCoordinateWithParent(newX, newY, jumpedOver);
-                						nextToVisit.add(jumpedTo);
+                						
                 						visitedCoordinate.put(cur, true);
+                						nextToVisit.add(jumpedTo);
                 						
                 					}
                 				}
@@ -234,8 +260,9 @@ public class PathFindingAlgorithm
             		
             		// if get to here, add to nextNode
             		PathFinderCoordinate coordinate = createCoordinateWithParent(cur.getX() + direction[0], cur.getY() + direction[1], cur);
-                    nextToVisit.add(coordinate);
-                    visitedCoordinate.put(cur, true);
+            		visitedCoordinate.put(cur, true);	
+            		nextToVisit.add(coordinate);
+                    
             	} 	
             }
         }
@@ -310,6 +337,12 @@ public class PathFindingAlgorithm
 	 * @return
 	 * 		and array list that shows the path to the provided coordinate from the
 	 * 		starting coordinate
+	 * 
+	 * Code Citation:
+	 * Title: Shortest path in a Binary Maze
+	 * Author: Aditya Goel
+	 * Date: 05/1/2020
+	 * Availability: https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
 	 */
 	private ArrayList<PathFinderCoordinate> getShortestPath(PathFinderCoordinate cur) {
         ArrayList<PathFinderCoordinate> path = new ArrayList<>();
@@ -332,20 +365,23 @@ public class PathFindingAlgorithm
 	 * 
 	 * @param x - the x value of the coordinate
 	 * @param y - the y value of the coordinate
+	 * @param to - the destingation coordinate 
 	 * @return
 	 * 		whether the coordinate is where an EXIT location type is at
 	 * 		true -> it is an EXIT; false -> it is not an EXIT
 	 */
-	private boolean foundExitInPath(int x, int y)
+	private boolean foundExitInPath(int x, int y, PathFinderCoordinate to)
 	{
 		PathFinderCoordinate tempC = createCoordinateWithParent(x, y, null);
 		
-		if (board.getLocationType(tempC).equals(LocationType.EXIT))
+		if (board.getLocationType(tempC).equals(LocationType.EXIT) &&
+				!tempC.equals(to))
 		{
+			
 			return true;
 		}
 		
-		return false;
+		return false; 
 	}
 	
 	/**
