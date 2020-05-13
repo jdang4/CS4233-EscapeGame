@@ -21,7 +21,7 @@ import escape.*;
  * Base class for each of the new tests.
  * @version May 7, 2020
  */
-class AbstractMasterTest
+class AbstractMasterTest_provided
 {
     static String masterTestLocation = "config/master-provided/";
     static String fileName;

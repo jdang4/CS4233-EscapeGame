@@ -3,20 +3,16 @@
  * The course was taken at Worcester Polytechnic Institute.
  *
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v2.0
+ * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-2.0/
+ * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Copyright ©2016-2020 Gary F. Pollice
+ * Copyright ©2020 Gary F. Pollice
  *******************************************************************************/
+
 package escape.escape.masterProvided;
 
-import static escape.piece.PieceName.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,13 +21,15 @@ import escape.TestObserver;
 import escape.board.coordinate.Coordinate;
 import escape.exception.EscapeException;
 import escape.piece.PieceName;
+import static escape.piece.PieceName.*;
 
 /**
  * Description
  * @version May 7, 2020
  */
-class MasterHexTest extends AbstractMasterTest
+class MasterSquareTests_provided extends AbstractMasterTest_provided
 {
+    
     /**
      * Description
      * @throws java.lang.Exception
@@ -39,7 +37,7 @@ class MasterHexTest extends AbstractMasterTest
     @BeforeAll
     static void setUpBeforeClass() throws Exception
     {
-        fileName = masterTestLocation + "MasterHexGame.xml";
+        fileName = masterTestLocation + "MasterSquareGame.xml";
     }
     
     /**
@@ -66,19 +64,27 @@ class MasterHexTest extends AbstractMasterTest
     {
         return Stream.of (
         	// Test one in all directions
-            Arguments.of(-3, 4, -3, 5, FROG, "move 1"),
-            Arguments.of(-3, 4, -2, 4, FROG, "move 1"),
-            Arguments.of(-3, 4, -2, 3, FROG, "move 1"),
-            Arguments.of(-3, 4, -3, 3, FROG, "move 1"),
-            Arguments.of(-3, 4, -4, 4, FROG, "move 1"),
+            Arguments.of(5, 6, 5, 7, FROG, "move 1"),
+            Arguments.of(13, 10, 12, 11, SNAIL, "move 1"),
+            Arguments.of(5, 6, 4, 6, FROG, "move 1"),
+            Arguments.of(13, 10, 12, 9, SNAIL, "move 1"),
+            Arguments.of(5, 6, 5, 5, FROG, "move 1"),
+            Arguments.of(17, 4, 18, 4, FROG, "move 1"),
+            Arguments.of(19, 2, 20, 1, HUMMINGBIRD, "move 1"),
             // Test > 1 and limits
-            Arguments.of(2, 3, 2, -3, FOX, "limit"),
-            Arguments.of(-1, 6, 6, 6, HUMMINGBIRD, "limit"),
-            Arguments.of(-3, 4, -5, 3, FROG, "limit"),
+            Arguments.of(17, 4, 19, 5, FROG, "limit"),
+            Arguments.of(15, 4, 9, 4, FOX, "limit"),
+            Arguments.of(19, 2, 12, 2, HUMMINGBIRD, "limit"),
+            Arguments.of(17, 6, 12, 6, HORSE, "limit"),
             // Jump
-            Arguments.of(-3, 4, -5, 6, FROG, "jump"),
+            Arguments.of(17, 4, 17, 7, FROG, "jump"),
+            Arguments.of(17, 6, 12, 1, HORSE, "jump"),
             // Fly
-            Arguments.of(-1, 6, 4, 1, HUMMINGBIRD, "fly")
+            Arguments.of(19, 2, 16, 5, HUMMINGBIRD, "fly"),
+            // UNBLOCK
+            Arguments.of(19, 9, 13, 9, FOX, "unblock"),
+            // Land on opponent
+            Arguments.of(17, 4, 16, 4, FROG, "land on opponent")
         );
     }
     
@@ -94,11 +100,11 @@ class MasterHexTest extends AbstractMasterTest
     @MethodSource("invalidMoveProvider")
     void invalidMove(int x1, int y1, int x2, int y2, String test)
     {
-    	TestObserver obs = new TestObserver();
-		
-    	game.addObserver(obs);
     	Coordinate c1 = game.makeCoordinate(x1,y1);
         Coordinate c2 = game.makeCoordinate(x2, y2);
+        TestObserver obs = new TestObserver();
+
+        game.addObserver(obs);
         try {
         	assertFalse(test, game.move(c1,  c2));
         	assertEquals(test, obs.getMessage());
@@ -110,19 +116,22 @@ class MasterHexTest extends AbstractMasterTest
     static Stream<Arguments> invalidMoveProvider()
     {
     	return Stream.of(
-    		Arguments.of(2, 3, -4, 5, "land on same player"),
-    		//Arguments.of(-1, 6, 1, 3, "non-linear"),
-    		Arguments.of(2, 3, 3, 3, "land on block"),
-    		Arguments.of(-1, 0, -1, -3, "cannot make move"),
-    		Arguments.of(-1, -1, -4, -1, "cannot make move"),
-    		Arguments.of(-1, 0, -5, 4, "> limit")
+    		Arguments.of(17, 6, 15, 6, "land on same player"),
+    		Arguments.of(5, 6, 3, 8, "cannot make move"),
+    		Arguments.of(15, 6, 14, 2, "non-linear"),
+    		Arguments.of(19, 9, 18, 9, "land on block"),
+    		Arguments.of(17, 4, 14, 4, "cannot make move"),
+    		Arguments.of(13, 10, 13, 11, "non-diagonal"),
+    		Arguments.of(17, 4, 18, 6, "cannot make move"),
+    		Arguments.of(5, 6, 7, 7, "cannot make move"),
+    		Arguments.of(5, 6, 5, 6, "Moving to Same Spot")
     	);
     }
     
     @Test
     void escape()
     {
-    	assertTrue(game.move(game.makeCoordinate(-1, -1), game.makeCoordinate(-3,  -1)));
-    	assertNull(game.getPieceAt(game.makeCoordinate(-3,  -1)));
+    	assertTrue(game.move(game.makeCoordinate(17, 6), game.makeCoordinate(18,  5)));
+    	assertNull(game.getPieceAt(game.makeCoordinate(18,  5)));
     }
 }

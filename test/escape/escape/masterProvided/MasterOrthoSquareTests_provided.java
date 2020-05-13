@@ -26,7 +26,7 @@ import escape.piece.PieceName;
  * Description
  * @version May 7, 2020
  */
-class MasterOrthoSquareTests extends AbstractMasterTest
+class MasterOrthoSquareTests_provided extends AbstractMasterTest_provided
 {
     /**
      * Description

@@ -50,6 +50,11 @@ class TestRules_Square
 	
 	
 	@Test
+	public void FalseCases()
+	{
+		
+	}
+	@Test
 	public void testingPlayer1MovesFirst()
 	{
 		EscapeGameManager emg = egb_pointConflict.makeGameManager();
