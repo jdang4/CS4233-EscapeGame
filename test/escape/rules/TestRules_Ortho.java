@@ -19,7 +19,7 @@ import escape.*;
 import escape.exception.EscapeException;
 
 /**
- * Description
+ * Used to test the rules on an ortho board
  * @version May 13, 2020
  */
 class TestRules_Ortho

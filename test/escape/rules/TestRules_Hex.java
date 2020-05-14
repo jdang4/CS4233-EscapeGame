@@ -18,7 +18,7 @@ import org.junit.jupiter.api.*;
 import escape.*;
 
 /**
- * Description
+ * Used to the test the rules on a hex board
  * @version May 13, 2020
  */
 class TestRules_Hex

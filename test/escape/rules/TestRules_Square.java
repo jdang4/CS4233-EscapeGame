@@ -25,7 +25,7 @@ import escape.board.coordinate.Coordinate;
 import escape.piece.EscapePiece;
 
 /**
- * Description
+ * Used to test the rules on a square board
  * @version May 11, 2020
  */
 class TestRules_Square
