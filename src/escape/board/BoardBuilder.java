@@ -19,8 +19,9 @@ import escape.exception.EscapeException;
 import escape.piece.*;
 import escape.util.*;
 
-/**
- * Description
+/** 
+ * This class is responsible for building the board based on the game
+ * config file
  * @version Apr 27, 2020
  */
 public class BoardBuilder
@@ -34,6 +35,11 @@ public class BoardBuilder
 		this.pieceTypes = pieceTypes;
 	}
 	
+	/**
+	 * This method is called to make the board (initialize the board)
+	 * 
+	 * @return the intialized board
+	 */
 	public GenericBoard makeBoard()
 	{
 		GenericBoard board = null;
@@ -54,7 +60,6 @@ public class BoardBuilder
 	private GenericBoard initializeBoard(GenericBoard board, LocationInitializer... initializers)
 	{
 		InitializeBoard initBoard = null;
-		
 		
 		// initializing a hex board
 		if (gameInitializer.getCoordinateType().equals(CoordinateID.HEX)) 

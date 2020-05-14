@@ -48,12 +48,7 @@ class TestRules_Square
 		obs = new TestObserver();
 	}
 	
-	
-	@Test
-	public void FalseCases()
-	{
-		
-	}
+
 	@Test
 	public void testingPlayer1MovesFirst()
 	{

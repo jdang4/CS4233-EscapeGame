@@ -189,7 +189,7 @@ public class EscapeGameController implements EscapeGameManager<Coordinate>
 				{
 					movingPiece = battle(movingPiece, to);
 				}
-				
+				 
 				else
 				{
 					notifyObservers("piece cannot battle", null);

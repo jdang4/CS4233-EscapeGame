@@ -88,7 +88,7 @@ public class EscapeGameBuilder
     		
     		pieceTypes.put(init.getPieceName(), descriptor);
     	}
-    	    	
+    	    	 
     	// build the board
     	BoardBuilder boardBuilder = new BoardBuilder(gameInitializer, pieceTypes);
     	
